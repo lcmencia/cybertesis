@@ -6,4 +6,4 @@ Palavras-chave: Formação Continuada; PNAIC; Professor Alfabetizador.', 2017, '
 INSERT INTO tesis_person(name) VALUES ('Dra. Olga Gonzalez de Cardozo');
 INSERT INTO tesis_person(name) VALUES ('SENHORINHA TUMA ROCHA VIANA, KEMLE');
 INSERT INTO tesis_tesis_tutor(tesis_id, person_id) VALUES (1, 1);
-INSERT INTO tesis_tesis_tutor(tesis_id, person_id) VALUES (1, 2);
+INSERT INTO tesis_tesis_author(tesis_id, person_id) VALUES (1, 2);

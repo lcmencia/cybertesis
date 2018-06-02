@@ -104,8 +104,8 @@
                     <div class="collapse navbar-collapse justify-content-end" id="navigation">
                         <form class="navbar-form">
                             <div class="input-group no-border">
-                                <input type="text" value="" class="form-control" placeholder="Search...">
-                                <button type="submit" class="btn btn-white btn-round btn-just-icon">
+                                <input id="buscador_principal" type="text" value="" class="form-control" placeholder="Buscar...">
+                                <button id="buscador_principal_btn" type="button" class="btn btn-white btn-round btn-just-icon">
                                     <i class="material-icons">search</i>
                                     <div class="ripple-container"></div>
                                 </button>
@@ -478,4 +478,9 @@
 <script src="{% static 'assets/js/material-dashboard.js' %}"></script>
 <!-- demo init -->
 <script src="{% static 'assets/js/plugins/demo.js' %}"></script>
-<!--
+
+<!--JS -->
+<script src="{% static 'assets/js/cybertesis/searcher.js' %}"></script>
+<script type="text/javascript">
+    var searchUrl = "{% url 'search' %}";
+</script>
