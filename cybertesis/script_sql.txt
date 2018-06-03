@@ -27,9 +27,19 @@ INSERT INTO tesis_tesis_tutor(tesis_id, person_id) VALUES (3, 6);
 INSERT INTO tesis_tesis_author(tesis_id, person_id) VALUES (3, 7);
 INSERT INTO tesis_tesis_author(tesis_id, person_id) VALUES (3, 8);
 
+INSERT INTO tesis_tesis(title, description, year, tesis_type, career_id, added_date)
+VALUES ('Caracterización de curvas de carga en baja tensión de la subestación Caapucú mediante herramientas computacionales',
+'Con el fin de obtener una metodología clara y aplicable al escenario actual de distribución para la caracterización de las curvas de cargas de los alimentadores de las ubestaciones a nivel país, atendiendo los problemas de escasez de datos como el perfilado de carga de clientes y de equipos de medición para el registro de estas curvas, se optó por trabajar con alimentadores que tengan bajo índice de traspaso de carga y teniendo en cuenta el avance de los trabajos de geo-referenciamiento de los clientes de ANDE se escogió la subestación Caapucú. De la campaña de medición, que tuvo lugar entre los meses de Noviembre 2016 a Abril 2017, el cual fue realizado con muchas limitaciones pero optimizados en los tiempos de trabajos, se obtuvieron datos que fueron procesados y analizados mediante herramientas informáticas con algoritmos de propia autoría, los cuales lograron agilizar los procesos de validación y organización de la base de datos. Las caracterizaciones de las curvas de carga fueron realizadas en el entorno R, con la aplicación y comparación de tres métodos de clusterización, los cuales fueron el Método de Ward, K-Means y K-Medoides. Además, el número óptimo de clusters por estrato fue fijado mediante medidas de validación internas y de estabilidad de clusters. En los resultados obtenidos se destaca que los resultados más óptimos se lograron con la aplicación del método de Ward y en los estratos propuesto predominaban la selección de dos clusters. Para validar la metodología se propuso compara las curvas obtenidas representativa en PU multiplicadas por la media del estrato con las suma de las demandas medidas por estrato, con lo cual se pudo concluir que con la aplicación de la metodología se obtuvo resultado propicios.',
+2017, 'T',2, now());
+INSERT INTO tesis_person(name) VALUES ('Rolando A. Rodriguez A.');
+INSERT INTO tesis_person(name) VALUES ('Gustavo Adolfo Casco Flecha');
+INSERT INTO tesis_person(name) VALUES ('Ever David Torres Sosa');
+INSERT INTO tesis_tesis_tutor(tesis_id, person_id) VALUES (1, 16);
+INSERT INTO tesis_tesis_author(tesis_id, person_id) VALUES (1, 17);
+INSERT INTO tesis_tesis_author(tesis_id, person_id) VALUES (1, 18);
+
 create or replace view tesis_full
 as
-
 select t.id as id, t.added_date, t.title, t.description, t.year, t.career_id, tc.name as career_name, tf.name as faculty_name, tf.place,
 ti.id as institution_id, ti.name as institution_name, array_to_string(array_agg(distinct aa.name),',') AS authors, array_to_string(array_agg(distinct at.name),',') AS tutors
 from tesis_tesis t
