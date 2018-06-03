@@ -1,5 +1,6 @@
 import json
 
+from django.core import serializers
 from django.http import HttpResponse
 from django.shortcuts import render
 
@@ -27,10 +28,8 @@ def search(request):
                 key = full._meta.fields[i].attname
                 value = str(full.__getattribute__(key))
                 if search in value:
-                    total_full.append((key, value))
+                    total_full.append(full)
                     break
 
-    the_data = json.dumps({
-        'results': total_full
-    })
+    the_data = serializers.serialize("json", [x for x in total_full])
     return HttpResponse(the_data, content_type='application/json')
