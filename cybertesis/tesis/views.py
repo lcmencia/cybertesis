@@ -42,11 +42,11 @@ def search(request):
 
         obj, created = Searches.objects.update_or_create(word=search)
         if not created:
+            obj.count += 1
+        else:
             if obj.count is None:
                 obj.count = 1
-            else:
-                obj.count += 1
-            obj.save()
+        obj.save()
 
     the_data = serializers.serialize("json", [x for x in total_full])
     return HttpResponse(the_data, content_type='application/json')
