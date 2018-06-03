@@ -35,7 +35,7 @@ def search(request):
         for full in all_full:
             for i in range(0, len(full._meta.fields)):
                 key = full._meta.fields[i].attname
-                value = str(full.__getattribute__(key))
+                value = str(full.__getattribute__(key)).lower()
                 if search in value:
                     total_full.append(full)
                     break
