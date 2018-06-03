@@ -19,7 +19,7 @@ function ajax_search_text(search_text){
             $.ajax({
                 url: searchUrl,
                 type: 'GET',
-                params: {
+                data: {
                     search_text: search_text
                 },
                 success: function(data){

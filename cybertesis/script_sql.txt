@@ -7,3 +7,17 @@ INSERT INTO tesis_person(name) VALUES ('Dra. Olga Gonzalez de Cardozo');
 INSERT INTO tesis_person(name) VALUES ('SENHORINHA TUMA ROCHA VIANA, KEMLE');
 INSERT INTO tesis_tesis_tutor(tesis_id, person_id) VALUES (1, 1);
 INSERT INTO tesis_tesis_author(tesis_id, person_id) VALUES (1, 2);
+
+create or replace view tesis_full
+as
+select t.id as id, t.title, t.description, t.year, t.career_id, tc.name as career_name, tf.name as faculty_name, tf.place,
+ti.id as institution_id, ti.name as institution_name, array_to_string(array_agg(distinct aa.name),',') AS authors, array_to_string(array_agg(distinct at.name),',') AS tutors
+from tesis_tesis t
+join tesis_career tc on tc.id = t.id
+join tesis_faculty tf on tf.id = tc.faculty_id
+join tesis_institution ti on ti.id = tf.institution_id
+join tesis_tesis_author tta on tta.tesis_id = t.id
+join tesis_person aa on tta.person_id = aa.id
+join tesis_tesis_tutor ttt on ttt.tesis_id = t.id
+join tesis_person at on tta.person_id = at.id
+group by t.id, t.title, t.description, t.year, t.career_id, tc.name, tf.name, tf.place, ti.id, ti.name

@@ -1,21 +1,36 @@
+import json
+
+from django.http import HttpResponse
 from django.shortcuts import render
-from django.views.generic import ListView
-from .models import Tesis
+
+from .models import Tesis, Faculty, Full
 
 
 def index(request):
-    data = request.GET
-
-    search = data.get('tesis_search')
-
     tesis_list = Tesis.objects.all()
-
-    context = {'tesis_list': tesis_list}
+    faculty_list = Faculty.objects.all()
+    total_tesis = len(tesis_list)
+    total_faculty = len(faculty_list)
+    all_full = Full.objects.all()
+    context = {'tesis_list': all_full, 'total_tesis': total_tesis, 'total_faculty': total_faculty}
     return render(request, "index.html", context)
 
 
 def search(request):
-    q = request.GET.get('search_text', '')
-    #university = SearchQuerySet().models(Univer).filter(content=q)
-    #the_data = serializers.serialize("json", [x.object for x in profession])
-    #return HttpResponse(the_data, content_type='application/json')
+    data = request.GET
+    search = data.get('search_text', '')
+    total_full = list()
+    if len(search) > 0:
+        all_full = Full.objects.all()
+        for full in all_full:
+            for i in range(0, len(full._meta.fields)):
+                key = full._meta.fields[i].attname
+                value = str(full.__getattribute__(key))
+                if search in value:
+                    total_full.append((key, value))
+                    break
+
+    the_data = json.dumps({
+        'results': total_full
+    })
+    return HttpResponse(the_data, content_type='application/json')

@@ -60,3 +60,20 @@ class Tesis(models.Model):
     tesis_type = models.CharField(max_length=3, choices=TYPE_CHOICES, default='T')
     tutor = models.ManyToManyField(Person, related_name='tutor')
     author = models.ManyToManyField(Person, related_name='author')
+
+
+class Full(models.Model):
+    title = models.TextField()
+    description = models.TextField()
+    year = models.TextField()
+    career_id = models.TextField()
+    career_name = models.TextField()
+    faculty_name = models.TextField()
+    place = models.TextField()
+    institution_id = models.TextField()
+    institution_name = models.TextField()
+    authors = models.TextField()
+    tutors = models.TextField()
+
+    class Meta:
+        managed = False
