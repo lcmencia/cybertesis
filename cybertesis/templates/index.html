@@ -158,7 +158,7 @@
                                 </div>
                                 <div class="card-footer">
                                     <div class="stats">
-                                        <i class="material-icons">date_range</i> Ultimas 24 Horas
+                                        <i class="material-icons">date_range</i>Desde el año {{ init_year}}
                                     </div>
                                 </div>
                             </div>
@@ -175,41 +175,41 @@
                                 </div>
                                 <div class="card-footer">
                                     <div class="stats">
-                                        <i class="material-icons text-danger">warning</i>
-                                        <a href="#pablo">Get More Space...</a>
+                                        <i class="material-icons">account_balance</i>De {{ total_institution }} universidades
+                                        <!--<a href="#pablo">De {{ total_univ }}</a>-->
                                     </div>
                                 </div>
                             </div>
                         </div>
 
+                        <!--<div class="col-lg-3 col-md-6 col-sm-6">-->
+                            <!--<div class="card card-stats">-->
+                                <!--<div class="card-header card-header-info card-header-icon">-->
+                                    <!--<div class="card-icon">-->
+                                        <!--<i class="fa fa-angle-double-up"></i>-->
+                                    <!--</div>-->
+                                    <!--<p class="card-category">Postgrado</p>-->
+                                    <!--<h3 class="card-title">+245</h3>-->
+                                <!--</div>-->
+                                <!--<div class="card-footer">-->
+                                    <!--<div class="stats">-->
+                                        <!--<i class="material-icons">update</i> Just Updated-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                        <!--</div>-->
                         <div class="col-lg-3 col-md-6 col-sm-6">
                             <div class="card card-stats">
                                 <div class="card-header card-header-danger card-header-icon">
                                     <div class="card-icon">
-                                        <i class="fa fa-angle-up"></i>
+                                        <i class="fa fa-search"></i>
                                     </div>
-                                    <p class="card-category">Grado</p>
-                                    <h3 class="card-title">75</h3>
+                                    <p class="card-category">Búsquedas</p>
+                                    <h3 class="card-title">{{ total_searchs }}</h3>
                                 </div>
                                 <div class="card-footer">
                                     <div class="stats">
-                                        <i class="material-icons">local_offer</i> Tracked from Github
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-md-6 col-sm-6">
-                            <div class="card card-stats">
-                                <div class="card-header card-header-info card-header-icon">
-                                    <div class="card-icon">
-                                        <i class="fa fa-angle-double-up"></i>
-                                    </div>
-                                    <p class="card-category">Postgrado</p>
-                                    <h3 class="card-title">+245</h3>
-                                </div>
-                                <div class="card-footer">
-                                    <div class="stats">
-                                        <i class="material-icons">update</i> Just Updated
+                                        <i class="material-icons">search</i> {{ total_words }} palabras diferentes
                                     </div>
                                 </div>
                             </div>
