@@ -1,8 +1,16 @@
 from django.shortcuts import render
+from django.views.generic import ListView
+from .models import Tesis
 
 
 def index(request):
-    context = {'name': 'value'}
+    data = request.GET
+
+    search = data.get('tesis_search')
+
+    tesis_list = Tesis.objects.all()
+
+    context = {'tesis_list': tesis_list}
     return render(request, "index.html", context)
 
 
