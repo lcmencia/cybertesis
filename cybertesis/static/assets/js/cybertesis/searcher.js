@@ -7,10 +7,10 @@ $(document).ready(function() {
         ajax_search_text(search_text);
     });
 
-    $buscador_principal.on("change keyup paste", function(){
-        var search_text = $(this).val();
-        ajax_search_text(search_text);
-    });
+//    $buscador_principal.on("change keyup paste", function(){
+//        var search_text = $(this).val();
+//        ajax_search_text(search_text);
+//    });
 });
 
 

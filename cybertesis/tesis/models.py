@@ -77,3 +77,8 @@ class Full(models.Model):
 
     class Meta:
         managed = False
+
+
+class Searches(models.Model):
+    word = models.TextField()
+    count = models.PositiveIntegerField(null=True)
