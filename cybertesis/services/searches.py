@@ -5,7 +5,7 @@ class SearchesServices:
 
     def __init__(self):
         # Limite de palabras más búscadas
-        self.LIMIT = 10
+        self.LIMIT = 5
 
     def get_top_words_searched(self):
         """ Retorna una lista de palabras más buscadas con su cantidad correspondiente, como un diccionario, y
