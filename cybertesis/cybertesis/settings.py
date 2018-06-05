@@ -124,4 +124,4 @@ try:
     from tesis import local_settings
     print("Local settings imported successfully.")
 except Exception as e:
-    print("Exeption importing Local Settings -> " + str(e))
+    print("Exception importing Local Settings -> " + str(e))
