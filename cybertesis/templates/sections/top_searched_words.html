@@ -7,6 +7,7 @@
         <div class="card-body table-responsive">
             <table class="table table-hover">
                 <thead class="text-warning">
+                <th>Posición</th>
                 <th>Palabra</th>
                 <th>Cantidad</th>
                 </thead>
@@ -14,6 +15,7 @@
                     {% if top_words_searched %}
                         {% for word in top_words_searched %}
                             <tr>
+                                <td>#{{ forloop.counter }}</td>
                                 <td>{{ word.word }}</td>
                                 <td>{{ word.count }}</td>
                             </tr>
