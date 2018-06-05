@@ -1,4 +1,4 @@
-from tesis.models import Faculty
+from tesis.models import Full, Tesis
 
 
 class FacultyService:
@@ -7,16 +7,15 @@ class FacultyService:
     """
 
     def __init__(self):
-        self.total_faculty = 0
+        self.total_tesis = 0
         self.outside_capital_percentage = 0
 
     def get_all_faculty_info(self):
-        faculty_list = Faculty.objects.all()
-        # Se obtiene la cantidad de facultades que son fuera de Asunción y Central
+        total_tesis = Tesis.objects.all()
+        self.total_tesis = len(total_tesis)
         outside_central_count = 0
-        for f in faculty_list:
-            if f.department_code.department_code not in [0, 11]:
+        for t in total_tesis:
+            if t.career.faculty.department_id.department_id not in [18, 11]:
                 # No es de Asunción o Central
                 outside_central_count += 1
-        self.total_faculty = len(faculty_list)
-        self.outside_capital_percentage = 100 - ((self.total_faculty - outside_central_count) / self.total_faculty * 100)
+        self.outside_capital_percentage = (outside_central_count / self.total_tesis) * 100

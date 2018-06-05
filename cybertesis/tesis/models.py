@@ -1,3 +1,4 @@
+import django
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from datetime import datetime
@@ -30,7 +31,6 @@ class Institution(models.Model):
 
 class PyDepartments(models.Model):
     department_id = models.IntegerField(primary_key=True, db_column='department_id')
-    department_code = models.IntegerField(unique=True, null=False, blank=False, db_column='department_code')
     department_name = models.CharField(max_length=100, null=False, blank=False, db_column='department_name')
     department_capital = models.CharField(max_length=100, null=False, blank=False, db_column='department_capital')
     lat = models.FloatField(null=True),
@@ -47,7 +47,7 @@ class Faculty(models.Model):
     lon = models.FloatField(null=True)
     lat = models.FloatField(null=True)
     address = models.CharField(max_length=200, null=True)
-    department_code = models.ForeignKey('PyDepartments', on_delete=models.CASCADE, to_field='department_code', default=0, db_column='department_code')
+    department_id = models.ForeignKey('PyDepartments', on_delete=models.CASCADE, to_field='department_id', default=0, db_column='department_id')
 
 
 class Career(models.Model):
@@ -76,7 +76,7 @@ class Tesis(models.Model):
     tesis_type = models.CharField(max_length=3, choices=TYPE_CHOICES, default='T')
     tutor = models.ManyToManyField(Person, related_name='tutor')
     author = models.ManyToManyField(Person, related_name='author')
-    added_date = models.DateTimeField(default=datetime.now())
+    added_date = models.DateTimeField(default=django.utils.timezone.now)
 
     class Meta:
         verbose_name_plural = 'Tesis'
