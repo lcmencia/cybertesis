@@ -11,22 +11,16 @@
                 <th>Cantidad</th>
                 </thead>
                 <tbody>
-                <tr>
-                    <td>Ciencias</td>
-                    <td>589</td>
-                </tr>
-                <tr>
-                    <td>Medicina</td>
-                    <td>411</td>
-                </tr>
-                <tr>
-                    <td>Tecnologia</td>
-                    <td>120</td>
-                </tr>
-                <tr>
-                    <td>Mecatronica</td>
-                    <td>101</td>
-                </tr>
+                    {% if top_words_searched %}
+                        {% for word in top_words_searched %}
+                            <tr>
+                                <td>{{ word.word }}</td>
+                                <td>{{ word.count }}</td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr><td colspan="2">Aún no se realizó ninguna búsqueda</td></tr>
+                    {% endif %}
                 </tbody>
             </table>
         </div>

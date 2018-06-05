@@ -33,11 +33,12 @@ class PyDepartments(models.Model):
     department_id = models.IntegerField(primary_key=True, db_column='department_id')
     department_name = models.CharField(max_length=100, null=False, blank=False, db_column='department_name')
     department_capital = models.CharField(max_length=100, null=False, blank=False, db_column='department_capital')
-    lat = models.FloatField(null=True),
-    lon = models.FloatField(null=True)
+    lat = models.FloatField(null=True, db_column='lat'),
+    lon = models.FloatField(null=True, db_column='lon')
 
     class Meta:
         db_table = 'tesis_py_departments'
+        managed = False
 
 
 class Faculty(models.Model):

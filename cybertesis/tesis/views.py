@@ -3,6 +3,7 @@ from django.db.models import F, Sum
 from django.http import HttpResponse
 from django.shortcuts import render
 from services.faculty import FacultyService
+from services.searches import SearchesServices
 
 from .models import Tesis, Faculty, Full, Searches, Institution
 
@@ -13,6 +14,9 @@ def index(request):
     # Se buscan todas las facultades
     facultyu_info = FacultyService()
     facultyu_info.get_all_faculty_info()
+
+    # Se extrae las palabras más buscadas
+    top_words_searched = SearchesServices().get_top_words_searched()
 
     university_list = Institution.objects.all()
     searches = Searches.objects.all()
@@ -27,7 +31,8 @@ def index(request):
     last = all_full.reverse()[0]
     context = {'tesis_list': all_full, 'total_tesis': total_tesis, 'total_faculty': facultyu_info.total_tesis,
                'init_year': last.year, 'total_institution': total_institution, 'total_words': total_words,
-               'total_searchs': total_searchs, 'outside_capital_percentage':facultyu_info.outside_capital_percentage}
+               'total_searchs': total_searchs, 'outside_capital_percentage': facultyu_info.outside_capital_percentage,
+               'top_words_searched': top_words_searched}
     return render(request, "index.html", context)
 
 
