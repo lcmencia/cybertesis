@@ -9,3 +9,4 @@ class AdminTesis(admin.ModelAdmin):
 
 
 admin.site.register(Tesis, AdminTesis)
+admin.site.site_header = 'Portal de Administracion'
