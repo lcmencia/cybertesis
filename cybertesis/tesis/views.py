@@ -4,12 +4,15 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from services.faculty import FacultyService
 from services.searches import SearchesServices
+from services.tesis import TesisServices
 
 from .models import Tesis, Faculty, Full, Searches, Institution
 
 
 def index(request):
-    tesis_list = Tesis.objects.all()
+    tesis_services = TesisServices()
+    tesis_services.generate_tesis_resume()
+    tesis_top_categories = tesis_services.top_categories
 
     # Se buscan todas las facultades
     facultyu_info = FacultyService()
@@ -23,7 +26,7 @@ def index(request):
     total_searchs_sum = Searches.objects.aggregate(Sum('count'))
     total_searchs = total_searchs_sum['count__sum']
     total_searchs = 0 if total_searchs is None else total_searchs
-    total_tesis = len(tesis_list)
+    total_tesis = tesis_services.total_tesis
 
     total_institution = len(university_list)
     total_words = len(searches)
@@ -32,7 +35,7 @@ def index(request):
     context = {'tesis_list': all_full, 'total_tesis': total_tesis, 'total_faculty': facultyu_info.total_tesis,
                'init_year': last.year, 'total_institution': total_institution, 'total_words': total_words,
                'total_searchs': total_searchs, 'outside_capital_percentage': facultyu_info.outside_capital_percentage,
-               'top_words_searched': top_words_searched}
+               'top_words_searched': top_words_searched, 'tesis_top_categories':tesis_top_categories}
     return render(request, "index.html", context)
 
 

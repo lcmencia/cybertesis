@@ -10,51 +10,19 @@ Tip 2: you can also add an image using data-image tag
         </a>
     </div>
     <div class="sidebar-wrapper">
-        <ul class="nav">
-            <li class="nav-item ">
-                <a class="nav-link" href="../examples/dashboard.html">
-                    <i class="fa fa-stethoscope"></i>
-                    <p>Salud y Medicina</p>
-                </a>
-            </li>
-            <li class="nav-item ">
-                <a class="nav-link" href="../examples/user.html">
-                    <i class="fa fa-microchip"></i>
-                    <p>Ingeniería y Tecnología</p>
-                </a>
-            </li>
-            <!--<li class="nav-item active">-->
-            <li class="nav-item">
-                <a class="nav-link" href="../examples/table.html">
-                    <i class="fa fa-calculator"></i>
-                    <p>Contabilidad Empresarial</p>
-                </a>
-            </li>
-            <li class="nav-item ">
-                <a class="nav-link" href="../examples/typography.html">
-                    <i class="material-icons">library_books</i>
-                    <p>Educación</p>
-                </a>
-            </li>
-            <li class="nav-item ">
-                <a class="nav-link" href="../examples/icons.html">
-                    <i class="material-icons">bubble_chart</i>
-                    <p>Arte y Bellas Artes</p>
-                </a>
-            </li>
-            <li class="nav-item ">
-                <a class="nav-link" href="../examples/maps.html">
-                    <i class="fa fa-bullhorn"></i>
-                    <p>Publicidad y Marketing</p>
-                </a>
-            </li>
-            <li class="nav-item ">
-                <a class="nav-link" href="../examples/notifications.html">
-                    <i class="fa fa-slideshare"></i>
-                    <p>Psicología</p>
-                </a>
-            </li>
-
-        </ul>
+        {% if tesis_top_categories %}
+            <ul class="nav">
+                    {% for category in tesis_top_categories %}
+                        <li class="nav-item ">
+                            <a class="nav-link" href="../examples/dashboard.html">
+                                <i class="{{ category.category_icon }}"></i>
+                                <p>{{ category.category_name }}</p>
+                            </a>
+                        </li>
+                    {% endfor %}
+            </ul>
+        {% else %}
+            <p>No existe ranking de categorías</p>
+        {% endif %}
     </div>
 </div>

@@ -78,6 +78,7 @@ class Tesis(models.Model):
     tutor = models.ManyToManyField(Person, related_name='tutor')
     author = models.ManyToManyField(Person, related_name='author')
     added_date = models.DateTimeField(default=django.utils.timezone.now)
+    sub_category = models.ManyToManyField('SubCategory', db_column='sub_category')
 
     class Meta:
         verbose_name_plural = 'Tesis'
@@ -103,3 +104,29 @@ class Full(models.Model):
 class Searches(models.Model):
     word = models.TextField()
     count = models.PositiveIntegerField(null=True)
+
+
+class TesisRanking(models.Model):
+    tesis_id = models.ForeignKey('Tesis', on_delete=models.CASCADE, db_column='tesis_id')
+    date_vote = models.DateTimeField(auto_now=True, db_column='date_vote')
+    vote_by = models.IntegerField(null=True)
+
+    class Meta:
+        db_table = 'tesis_tesis_ranking'
+
+
+class Category(models.Model):
+    category_name = models.CharField(max_length=100, db_column='category_name', unique=True)
+    category_fa_icon = models.CharField(max_length=100, db_column='category_fa_icon', null=True)
+
+    class Meta:
+        db_table = 'tesis_category'
+
+
+class SubCategory(models.Model):
+    sub_category_name = models.CharField(max_length=100, db_column='sub_category_name', unique=True)
+    sub_category_fa_icon = models.CharField(max_length=100, db_column='sub_category_fa_icon', null=True)
+    categories = models.ManyToManyField('Category', db_column='categories')
+
+    class Meta:
+        db_table = 'tesis_sub_category'
