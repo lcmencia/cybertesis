@@ -24,66 +24,10 @@
 
 <body class="">
     <div class="wrapper">
-        <div class="sidebar" data-color="green" data-background-color="white" data-image="../assets/img/sidebar-1.jpg">
-            <!--
-        Tip 1: You can change the color of the sidebar using: data-color="purple | azure | green | orange | danger"
+        <!-- Side bar: ranking de categorías -->
+        {% include 'sections/left_categories_ranking.html' %}
+        <!-- End ranking de categorías -->
 
-        Tip 2: you can also add an image using data-image tag
-    -->
-            <div class="logo">
-                <a href="#" class="simple-text logo-normal">
-                    <i class="fa fa-trophy"></i> RANKING <br>DE CATEGORIAS
-                </a>
-            </div>
-            <div class="sidebar-wrapper">
-                <ul class="nav">
-                    <li class="nav-item ">
-                        <a class="nav-link" href="../examples/dashboard.html">
-                            <i class="fa fa-stethoscope"></i>
-                            <p>Salud y Medicina</p>
-                        </a>
-                    </li>
-                    <li class="nav-item ">
-                        <a class="nav-link" href="../examples/user.html">
-                            <i class="fa fa-microchip"></i>
-                            <p>Ingeniería y Tecnología</p>
-                        </a>
-                    </li>
-                    <!--<li class="nav-item active">-->
-                    <li class="nav-item">
-                    <a class="nav-link" href="../examples/table.html">
-                            <i class="fa fa-calculator"></i>
-                            <p>Contabilidad Empresarial</p>
-                        </a>
-                    </li>
-                    <li class="nav-item ">
-                        <a class="nav-link" href="../examples/typography.html">
-                            <i class="material-icons">library_books</i>
-                            <p>Educación</p>
-                        </a>
-                    </li>
-                    <li class="nav-item ">
-                        <a class="nav-link" href="../examples/icons.html">
-                            <i class="material-icons">bubble_chart</i>
-                            <p>Arte y Bellas Artes</p>
-                        </a>
-                    </li>
-                    <li class="nav-item ">
-                        <a class="nav-link" href="../examples/maps.html">
-                            <i class="fa fa-bullhorn"></i>
-                            <p>Publicidad y Marketing</p>
-                        </a>
-                    </li>
-                    <li class="nav-item ">
-                        <a class="nav-link" href="../examples/notifications.html">
-                            <i class="fa fa-slideshare"></i>
-                            <p>Psicología</p>
-                        </a>
-                    </li>
-
-                </ul>
-            </div>
-        </div>
         <div class="main-panel">
             <!-- Navbar -->
             <nav class="navbar navbar-expand-lg navbar-transparent  navbar-absolute fixed-top">
@@ -161,7 +105,7 @@
                         {% include 'sections/recommended_tutors.html' %}
 
                         <!-- Palabras más buscadas-->
-                        {% include 'sections/top_search_words.html' %}
+                        {% include 'sections/top_searched_words.html' %}
                     </div>
 
                 </div>

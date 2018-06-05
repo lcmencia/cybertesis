@@ -2,27 +2,32 @@ from django.core import serializers
 from django.db.models import F, Sum
 from django.http import HttpResponse
 from django.shortcuts import render
+from services.faculty import FacultyService
 
 from .models import Tesis, Faculty, Full, Searches, Institution
 
 
 def index(request):
     tesis_list = Tesis.objects.all()
-    faculty_list = Faculty.objects.all()
+
+    # Se buscan todas las facultades
+    facultyu_info = FacultyService()
+    facultyu_info.get_all_faculty_info()
+
     university_list = Institution.objects.all()
     searches = Searches.objects.all()
     total_searchs_sum = Searches.objects.aggregate(Sum('count'))
     total_searchs = total_searchs_sum['count__sum']
     total_searchs = 0 if total_searchs is None else total_searchs
     total_tesis = len(tesis_list)
-    total_faculty = len(faculty_list)
+
     total_institution = len(university_list)
     total_words = len(searches)
     all_full = Full.objects.all()
     last = all_full.reverse()[0]
-    context = {'tesis_list': all_full, 'total_tesis': total_tesis, 'total_faculty': total_faculty,
+    context = {'tesis_list': all_full, 'total_tesis': total_tesis, 'total_faculty': facultyu_info.total_faculty,
                'init_year': last.year, 'total_institution': total_institution, 'total_words': total_words,
-               'total_searchs': total_searchs}
+               'total_searchs': total_searchs, 'outside_capital_percentage':facultyu_info.outside_capital_percentage}
     return render(request, "index.html", context)
 
 

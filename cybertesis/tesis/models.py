@@ -28,6 +28,18 @@ class Institution(models.Model):
     institution_type = models.CharField(max_length=3, choices=TYPE_CHOICES)
 
 
+class PyDepartments(models.Model):
+    department_id = models.IntegerField(primary_key=True, db_column='department_id')
+    department_code = models.IntegerField(unique=True, null=False, blank=False, db_column='department_code')
+    department_name = models.CharField(max_length=100, null=False, blank=False, db_column='department_name')
+    department_capital = models.CharField(max_length=100, null=False, blank=False, db_column='department_capital')
+    lat = models.FloatField(null=True),
+    lon = models.FloatField(null=True)
+
+    class Meta:
+        db_table = 'tesis_py_departments'
+
+
 class Faculty(models.Model):
     name = models.TextField(null=True)
     institution = models.ForeignKey('Institution', on_delete=models.CASCADE)
@@ -35,6 +47,7 @@ class Faculty(models.Model):
     lon = models.FloatField(null=True)
     lat = models.FloatField(null=True)
     address = models.CharField(max_length=200, null=True)
+    department_code = models.ForeignKey('PyDepartments', on_delete=models.CASCADE, to_field='department_code', default=0, db_column='department_code')
 
 
 class Career(models.Model):
