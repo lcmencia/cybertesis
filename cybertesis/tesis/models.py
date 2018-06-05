@@ -15,6 +15,9 @@ class Person(models.Model):
     document_type = models.ForeignKey('DocumentType', on_delete=models.CASCADE, null=True)
     name = models.CharField(max_length=100)
 
+    def __str__(self):
+        return self.name
+
 
 class Institution(models.Model):
     TYPE_CHOICES = (
@@ -61,6 +64,9 @@ class Tesis(models.Model):
     tutor = models.ManyToManyField(Person, related_name='tutor')
     author = models.ManyToManyField(Person, related_name='author')
     added_date = models.DateTimeField(default=datetime.now())
+
+    class Meta:
+        verbose_name_plural = 'Tesis'
 
 
 class Full(models.Model):
