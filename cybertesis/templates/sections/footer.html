@@ -1,0 +1,32 @@
+{% load static %}
+<footer class="footer ">
+    <div class="container-fluid">
+        <nav class="pull-left">
+            <div class="row">
+                <div class="footer-images col-xs-4 col-sm-2 col-md-3">
+                    <p data-redactor-inserted-image="true">
+                        <a href="https://hackathon.innovando.gov.py"  target="_blank">
+                            <img src="{% static 'assets/img/hackaton/InnovandoPy-hackathon.jpg' %}"
+                                 alt="InnovandoPy" id="logo-innovandopy">
+                        </a>
+                    </p>
+                </div>
+
+                <div class="footer-images col-xs-4 col-sm-2 col-md-3">
+                    <p data-redactor-inserted-image="true">
+                        <a href="https://www.senatics.gov.py" target="_blank">
+                            <img src="{% static 'assets/img/senatics/Logo-SENATICs.png' %}"
+                                 alt="SENATICs" id="logo-SENATICs">
+                        </a>
+                    </p>
+                </div>
+                <div class="copyright pull-right">
+                    &copy;
+                    <script>
+                        document.write(new Date().getFullYear())
+                    </script>
+                </div>
+            </div>
+        </nav>
+    </div>
+</footer>
