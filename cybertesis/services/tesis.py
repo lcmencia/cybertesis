@@ -21,7 +21,7 @@ class TesisServices:
         for sc in sub_category_list:
             sub_category_values[sc.sub_category_name] = 0
 
-        # Se buscan las teesis que fueron rankeadas y total de votación
+        # Se buscan las tesis que fueron rankeadas y total de votación
         for tesis in self.tesis_list.all():
             # total de votación para esa tesis
             total_ranking = len(tesis.tesisranking_set.all())
@@ -34,7 +34,7 @@ class TesisServices:
         self.top_sub_categories = [{k: sub_category_values[k]} for k in sorted(sub_category_values, key=sub_category_values.get, reverse=True)][:self.LIMIT]
         categories_list = []
         names_list = []
-        # Se buscan las cateorías asociadas a cada sub-categoría, y se agregan a la lista de ranking
+        # Se buscan las categorías asociadas a cada sub-categoría, y se agregan a la lista de ranking
         for sc in self.top_sub_categories:
             sub_categories = SubCategory.objects.filter(sub_category_name=list(sc.keys())[0])
             for subc in sub_categories.all():

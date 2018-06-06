@@ -37,13 +37,13 @@ INSERT INTO tesis_tesis_ranking (date_vote, vote_by, tesis_id) VALUES (now(), NU
 INSERT INTO tesis_tesis_ranking (date_vote, vote_by, tesis_id) VALUES (now(), NULL, 4);
 
 -- Categorías
-INSERT INTO tesis_category (category_name) VALUES ('Ingeniería y Tecnología');
-INSERT INTO tesis_category (category_name) VALUES ('Contabilidad Empresarial');
-INSERT INTO tesis_category (category_name) VALUES ('Educación');
-INSERT INTO tesis_category (category_name) VALUES ('Arte y Bellas Artes');
-INSERT INTO tesis_category (category_name) VALUES ('Publicidad y Marketing');
-INSERT INTO tesis_category (category_name) VALUES ('Psicología');
-INSERT INTO tesis_category (category_name) VALUES ('Salud y Medicina');
+INSERT INTO tesis_category (category_name, category_fa_icon) VALUES ('Ingeniería y Tecnología', '<i class=\"fa fa-microchip\"></i>');
+INSERT INTO tesis_category (category_name, category_fa_icon) VALUES ('Contabilidad Empresarial', '<i class=\"fa fa-calculator\"></i>');
+INSERT INTO tesis_category (category_name, category_fa_icon) VALUES ('Educación', <i class="material-icons">library_books</i>);
+INSERT INTO tesis_category (category_name, category_fa_icon) VALUES ('Arte y Bellas Artes', '<i class=\"material-icons\">bubble_chart</i>');
+INSERT INTO tesis_category (category_name, category_fa_icon) VALUES ('Publicidad y Marketing', '<i class=\"fa fa-bullhorn\"></i>');
+INSERT INTO tesis_category (category_name, category_fa_icon) VALUES ('Psicología','<i class=\"fa fa-slideshare\"></i>');
+INSERT INTO tesis_category (category_name, category_fa_icon) VALUES ('Salud y Medicina', '<i class=\"fa fa-stethoscope\"></i>');
 
 -- Sub.Categorias
 INSERT INTO tesis_sub_category (sub_category_name) VALUES ('Ingeniería Electrónica');

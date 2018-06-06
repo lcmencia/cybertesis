@@ -1,4 +1,4 @@
-from tesis.models import Full, Tesis
+from tesis.models import Tesis
 
 
 class FacultyService:
