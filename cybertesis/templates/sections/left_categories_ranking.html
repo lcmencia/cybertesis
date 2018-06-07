@@ -15,7 +15,7 @@ Tip 2: you can also add an image using data-image tag
                     {% for category in tesis_top_categories %}
                         <li class="nav-item ">
                             <a class="nav-link" href="../examples/dashboard.html">
-                                {{ category.category_icon |safe }}
+                                <i class='{{ category.category_icon |safe }}'></i>
                                 <p>{{ category.category_name }}</p>
                             </a>
                         </li>

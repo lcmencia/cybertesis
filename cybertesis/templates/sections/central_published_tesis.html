@@ -9,6 +9,8 @@
                     <table class="table">
                         <thead class=" text-primary">
                         <th>
+                        </th>
+                        <th>
                             Titulo
                         </th>
                         <th>
@@ -27,6 +29,9 @@
                         <tbody id="results_body">
                         {% for item in tesis_list %}
                             <tr>
+                                <td><a href="{% url 'tesis' item.id %}" target="_blank">
+                                    <span class="fa fa-external-link tesis-access-link"></span></a>
+                                </td>
                                 <td style="text-overflow: ellipsis;">
                                     {{ item.title }}
                                 </td>

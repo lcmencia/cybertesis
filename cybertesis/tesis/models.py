@@ -1,3 +1,5 @@
+from time import time
+
 import django
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
@@ -21,12 +23,17 @@ class Person(models.Model):
 
 
 class Institution(models.Model):
+
+    def get_upload_file_name(instance, filename):
+        return "institution_logo/%s_%s" % (str(time()).replace('.', '_'), filename)
+
     TYPE_CHOICES = (
         ('N', 'Nacional'),
         ('P', 'Privada'))
     name = models.TextField()
     description = models.TextField(null=True)
     institution_type = models.CharField(max_length=3, choices=TYPE_CHOICES)
+    logo = models.ImageField(null=True, blank=True, upload_to=get_upload_file_name)
 
 
 class PyDepartments(models.Model):

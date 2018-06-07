@@ -6,3 +6,20 @@ div.copyright{
 div.footer-images img{
     width: 100% !important;
 }
+
+div.tesis-description-container{
+    margin-top: 10px;
+}
+
+p.tesis-description{
+    height: 100%;
+    line-height: 1.6em;
+    text-indent: 2em;
+    text-align: justify;
+    padding: 0 80px 0 80px;
+}
+
+span.tesis-access-link{
+    font-size: 20px;
+    color: #6c757d;
+}

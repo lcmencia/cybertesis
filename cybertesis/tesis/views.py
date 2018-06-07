@@ -1,7 +1,8 @@
+from django.contrib import messages
 from django.core import serializers
 from django.db.models import F, Sum
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from services.faculty import FacultyService
 from services.searches import SearchesServices
 from services.tesis import TesisServices
@@ -69,3 +70,16 @@ def search(request):
 
     the_data = serializers.serialize("json", [x for x in total_full])
     return HttpResponse(the_data, content_type='application/json')
+
+
+def tesis(request, tesis_id=None):
+    tesis_data = {}
+    if tesis_id:
+        tesis_data = TesisServices.get_by_id(tesis_id)
+
+    if tesis_data:
+        context = {'tesis': tesis_data}
+        return render(request, "tesis-resume.html", context)
+    else:
+        messages.error(request, 'No se ha encontrado una tesis para el ID correspondiente')
+        return redirect('index')

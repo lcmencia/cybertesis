@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+
+    {% block styles %}{% endblock styles %}
+
+</head>
+
+<body class="">
+    <div class="wrapper">
+
+        {% block  left_categories_ranking %}{% endblock left_categories_ranking %}
+
+        <div class="main-panel">
+
+            {% block nav_bar %}{% endblock nav_bar %}
+
+            <div class="content">
+                {% include 'utils/messages.html' %}
+                <div class="container-fluid">
+                    {% block content %}{% endblock content %}
+                </div>
+            </div>
+
+            {% block footer %}{% endblock footer %}
+
+        </div>
+    </div>
+</body>
+
+{% block bottom_js %}{% endblock bottom_js %}

@@ -44,3 +44,35 @@ class TesisServices:
                         categories_list.append({'category_name': c.category_name,
                                                 'category_icon': c.category_fa_icon})
         self.top_categories = categories_list
+
+    @classmethod
+    def get_by_id(cls, tesis_id):
+        tesis_data = {}
+        try:
+            tesis = Tesis.objects.get(id=tesis_id)
+            if tesis:
+                tesis_data['title'] = tesis.title
+                tesis_data['career_name'] = tesis.career.name
+                tesis_data['postgraduate'] = tesis.career.postgraduate
+                tesis_data['institution'] = tesis.career.faculty.institution.name
+                tesis_data['logo'] = tesis.career.faculty.institution.logo
+                tesis_data['faculty'] = tesis.career.faculty.name
+                tesis_data['place'] = tesis.career.faculty.department_id.department_name
+                tesis_data['url'] = tesis.url
+                tesis_data['format'] = tesis.format
+                tesis_data['year'] = tesis.year
+                tesis_data['type'] = tesis.tesis_type
+                tesis_data['add_date'] = tesis.added_date
+                tesis_data['description'] = tesis.description
+                tutors = []
+                for tutor in tesis.tutor.all()[:2]:
+                    tutors.append(tutor.name)
+                tesis_data['tutor1'] = tutors[0] if tutors else ''
+                tesis_data['tutor2'] = tutors[1] if len(tutors) >= 2 else ''
+                authors = []
+                for author in tesis.author.all()[:2]:
+                    authors.append(author.name)
+                tesis_data['authors'] = ', '.join(authors)
+        except Exception as e:
+            return None
+        return tesis_data
