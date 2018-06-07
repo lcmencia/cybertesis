@@ -21,8 +21,8 @@
                 <div class="col-md-8">
                     <div class="card">
                         <div class="card-header card-header-primary">
-                            <h4 class="card-title">{{ tesis.type|default:"" }}</h4>
-                            <p class="card-category">{{ tesis.title|default:"" }}</p>
+                            <h4 class="card-title">{{ tesis.type|default:'' }}</h4>
+                            <p class="card-category">{{ tesis.title|default:'' }}</p>
                         </div>
                         <div class="card-body">
                             <form>
@@ -30,7 +30,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="bmd-label-floating">Año</label>
-                                            <input type="text" class="form-control" value="{{ tesis.year|default:"" }}"
+                                            <input type="text" class="form-control" value="{{ tesis.year|default:'' }}"
                                                    disabled>
                                         </div>
                                     </div>
@@ -50,7 +50,7 @@
                                             <label class="bmd-label-floating">Nombre de Carrera o programa de
                                                 Postgrado</label>
                                             <input type="text" class="form-control"
-                                                   value="{{ tesis.career_name|default:"" }}"
+                                                   value="{{ tesis.career_name|default:'' }}"
                                                    disabled>
                                         </div>
                                     </div>
@@ -60,14 +60,14 @@
                                         <div class="form-group">
                                             <label class="bmd-label-floating">Tutor 1</label>
                                             <input type="text" class="form-control"
-                                                   value="{{ tesis.tutor1|default:"" }}" disabled>
+                                                   value="{{ tesis.tutor1|default:'' }}" disabled>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label class="bmd-label-floating">Tutor 2</label>
                                             <input type="text" class="form-control"
-                                                   value="{{ tesis.tutor2|default:"" }}" disabled>
+                                                   value="{{ tesis.tutor2|default:'' }}" disabled>
                                         </div>
                                     </div>
                                 </div>
@@ -76,7 +76,7 @@
                                         <div class="form-group">
                                             <label class="bmd-label-floating">Autores</label>
                                             <input type="text" class="form-control"
-                                                   value="{{ tesis.authors|default:"" }}" disabled>
+                                                   value="{{ tesis.authors|default:'' }}" disabled>
                                         </div>
                                     </div>
                                 </div>
@@ -95,14 +95,14 @@
                                         <div class="form-group">
                                             <label class="bmd-label-floating">Link</label>
                                             <input type="text" class="form-control"
-                                                   value="{{ tesis.url|default:"No existe link" }}" disabled>
+                                                   value="{{ tesis.url|default:'No existe link' }}" disabled>
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <label class="bmd-label-floating">Formato</label>
                                             <input type="text" class="form-control"
-                                                   value="{{ tesis.format|default:"No especificado" }}" disabled>
+                                                   value="{{ tesis.format|default:'No especificado' }}" disabled>
                                         </div>
                                     </div>
                                 </div>
