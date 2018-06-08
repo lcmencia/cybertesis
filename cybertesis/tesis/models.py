@@ -103,6 +103,7 @@ class Full(models.Model):
     institution_name = models.TextField()
     authors = models.TextField()
     tutors = models.TextField()
+    added_date = models.DateTimeField()
 
 
 class Searches(models.Model):

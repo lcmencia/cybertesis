@@ -7,6 +7,7 @@ from services.faculty import FacultyService
 from services.searches import SearchesServices
 from services.tesis import TesisServices
 
+
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.models import User
@@ -14,7 +15,7 @@ from django.contrib.auth import authenticate, login, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.views.generic import RedirectView
 
-from .models import Tesis, Faculty, Full, Searches, Institution
+from .models import Full, Searches, Institution, Category
 
 
 def authentication(request):
@@ -30,6 +31,20 @@ def authentication(request):
 
 @login_required()
 def index(request):
+    data = request.GET
+    category_selected = 0
+    category_name = ''
+
+    if len(data) > 0:
+        category_selected = data.get('category_id', 0)
+        category_selected = int(category_selected)
+        if category_selected > 0:
+            category = Category.objects.get(pk=category_selected)
+            category_name = category.category_name
+            #TODO 106. Aqui significa que se esta filtrando por una categoria, entonces traer todas las tesis de esa categoria
+            # Viendo la interfaz todos los cuadraditos menos el de busqueda tambien deberian modificarse para reflejar el estado
+            # de esa categoria o NO? Pensar para mañana
+
     tesis_services = TesisServices()
     tesis_services.generate_tesis_resume()
     university_list = Institution.objects.all()
@@ -61,7 +76,7 @@ def index(request):
     total_words = len(searches)
 
     # Todas las tesis a mostrarse, ordenado de mas reciente a menos
-    all_full = Full.objects.all().order_by('-year')
+    all_full = Full.objects.all().order_by('-year', '-added_date')
 
     # Se obtiene la primera tesis, la ultima de la lista, para sacar el dato desde que año tenemos tesis
     last = all_full.reverse()[0]
@@ -70,10 +85,14 @@ def index(request):
     # Porcentaje de tesis presentadas en el interior con respecto al total de tesis del pais
     outside_capital_percentage = facultyu_info.outside_capital_percentage
 
-    context = {'tesis_list': all_full, 'total_tesis': total_tesis, 'total_faculty': total_faculty,
+    # En la lista de tesis se evaluan la cantidad que hubo en cada año en el interior los ultimos 2 años para saber la tendencia
+    trending = tesis_services.trending
+
+    context = {'tesis_list': all_full, 'total_tesis': total_tesis, 'total_faculty': total_faculty, 'trending': trending,
                'init_year': init_year, 'total_institution': total_institution, 'total_words': total_words,
                'total_searchs': total_searchs, 'outside_capital_percentage': outside_capital_percentage,
-               'top_words_searched': top_words_searched, 'tesis_top_categories': tesis_top_categories}
+               'top_words_searched': top_words_searched, 'tesis_top_categories': tesis_top_categories,
+               'category_name': category_name, 'category_selected': category_selected}
     return render(request, "index.html", context)
 
 

@@ -1,6 +1,11 @@
 -- Vista de tesis_full, es un join de muchas tablas que muestra casi todas las columnas de todas las tablas relacionadas a tesis
 -- En esta vista se realiza la busqueda en todas las columnas cuando un usuario ingresa una palabra en el buscador
-create or replace view tesis_full
+CREATE OR REPLACE FUNCTION refresh_full() returns void
+AS
+$BODY$
+declare
+begin
+    create or replace view tesis_full
 as
 select t.id as id, t.added_date, t.title, t.description, t.year, t.career_id, tc.name as career_name, tf.name as faculty_name, tf.place,
 ti.id as institution_id, ti.name as institution_name, array_to_string(array_agg(distinct aa.name),',') AS authors, array_to_string(array_agg(distinct at.name),',') AS tutors
@@ -14,6 +19,12 @@ join tesis_tesis_tutor ttt on ttt.tesis_id = t.id
 join tesis_person at on ttt.person_id = at.id
 group by t.id, t.added_date, t.title, t.description, t.year, t.career_id, tc.name, tf.name, tf.place, ti.id, ti.name
 order by t.year DESC, t.added_date DESC;
+end;
+$BODY$
+  LANGUAGE plpgsql VOLATILE;
+
+--Para actualizar la vista
+select refresh_full();
 
 -- Departamentos
 -- Del 1 al 17 son departamentos. Usamos el ID 18 para la capital
