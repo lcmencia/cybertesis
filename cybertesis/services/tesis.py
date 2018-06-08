@@ -45,7 +45,7 @@ class TesisServices:
                 for c in subc.categories.all():
                     if c.category_name not in names_list:
                         names_list.append(c.category_name)
-                        categories_list.append({'category_name': c.category_name,
+                        categories_list.append({'category_name': c.category_name, 'id': c.id,
                                                 'category_icon': c.category_fa_icon})
         self.top_categories = categories_list
 

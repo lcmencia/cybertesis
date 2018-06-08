@@ -7,10 +7,24 @@ from services.faculty import FacultyService
 from services.searches import SearchesServices
 from services.tesis import TesisServices
 
-from .models import Full, Searches, Institution
+from .models import Full, Searches, Institution, Category
 
 
 def index(request):
+    data = request.GET
+    category_selected = 0
+    category_name = ''
+
+    if len(data) > 0:
+        category_selected = data.get('category_id', 0)
+        category_selected = int(category_selected)
+        if category_selected > 0:
+            category = Category.objects.get(pk=category_selected)
+            category_name = category.category_name
+            #TODO 106. Aqui significa que se esta filtrando por una categoria, entonces traer todas las tesis de esa categoria
+            # Viendo la interfaz todos los cuadraditos menos el de busqueda tambien deberian modificarse para reflejar el estado
+            # de esa categoria o NO? Pensar para mañana
+
     tesis_services = TesisServices()
     tesis_services.generate_tesis_resume()
     university_list = Institution.objects.all()
@@ -57,7 +71,8 @@ def index(request):
     context = {'tesis_list': all_full, 'total_tesis': total_tesis, 'total_faculty': total_faculty, 'trending': trending,
                'init_year': init_year, 'total_institution': total_institution, 'total_words': total_words,
                'total_searchs': total_searchs, 'outside_capital_percentage': outside_capital_percentage,
-               'top_words_searched': top_words_searched, 'tesis_top_categories': tesis_top_categories}
+               'top_words_searched': top_words_searched, 'tesis_top_categories': tesis_top_categories,
+               'category_name': category_name, 'category_selected': category_selected}
     return render(request, "index.html", context)
 
 
