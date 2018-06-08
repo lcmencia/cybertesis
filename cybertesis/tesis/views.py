@@ -7,7 +7,7 @@ from services.faculty import FacultyService
 from services.searches import SearchesServices
 from services.tesis import TesisServices
 
-from .models import Tesis, Faculty, Full, Searches, Institution
+from .models import Full, Searches, Institution
 
 
 def index(request):
@@ -51,7 +51,10 @@ def index(request):
     # Porcentaje de tesis presentadas en el interior con respecto al total de tesis del pais
     outside_capital_percentage = facultyu_info.outside_capital_percentage
 
-    context = {'tesis_list': all_full, 'total_tesis': total_tesis, 'total_faculty': total_faculty,
+    # En la lista de tesis se evaluan la cantidad que hubo en cada año en el interior los ultimos 2 años para saber la tendencia
+    trending = tesis_services.trending
+
+    context = {'tesis_list': all_full, 'total_tesis': total_tesis, 'total_faculty': total_faculty, 'trending': trending,
                'init_year': init_year, 'total_institution': total_institution, 'total_words': total_words,
                'total_searchs': total_searchs, 'outside_capital_percentage': outside_capital_percentage,
                'top_words_searched': top_words_searched, 'tesis_top_categories': tesis_top_categories}
