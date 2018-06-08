@@ -16,12 +16,15 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from tesis import views
+from django.contrib.auth import views as auth_views
 from django.conf.urls.static import static
 
 from . import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('login/', views.authentication, name="authentication"),
+    path('logout/', auth_views.logout, {'next_page': '/login'}, name="logout"),
     path('', views.index, name='index'),
     path('search/', views.search, name='search'),
     path('tesis/<int:tesis_id>/', views.tesis, name='tesis'),

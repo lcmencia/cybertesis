@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import os
+from django.urls import reverse_lazy
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 from django.contrib import messages
@@ -140,6 +141,11 @@ STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'mediafiles')
 
+LOGIN_URL = reverse_lazy('authentication')
+
+LOGOUT_URL = reverse_lazy('logout')
+
+project_home = u'/Users/lcmencia/PycharmProjects/cybertesis/cybertesis/cybertesis/settings.py'
 
 try:
     from tesis import local_settings

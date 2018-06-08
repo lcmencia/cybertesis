@@ -55,7 +55,7 @@ class Faculty(models.Model):
     lon = models.FloatField(null=True)
     lat = models.FloatField(null=True)
     address = models.CharField(max_length=200, null=True)
-    department_id = models.ForeignKey('PyDepartments', on_delete=models.CASCADE, to_field='department_id', default=0, db_column='department_id')
+    department_id = models.ForeignKey('PyDepartments', on_delete=models.CASCADE)
 
 
 class Career(models.Model):
@@ -103,9 +103,6 @@ class Full(models.Model):
     institution_name = models.TextField()
     authors = models.TextField()
     tutors = models.TextField()
-
-    class Meta:
-        managed = False
 
 
 class Searches(models.Model):
