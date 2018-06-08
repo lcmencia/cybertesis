@@ -13,30 +13,48 @@ from .models import Tesis, Faculty, Full, Searches, Institution
 def index(request):
     tesis_services = TesisServices()
     tesis_services.generate_tesis_resume()
-    tesis_top_categories = tesis_services.top_categories
-
-    # Se buscan todas las facultades
+    university_list = Institution.objects.all()
+    searches = Searches.objects.all()
     facultyu_info = FacultyService()
     facultyu_info.get_all_faculty_info()
 
-    # Se extrae las palabras más buscadas
+    # Top de categorias
+    tesis_top_categories = tesis_services.top_categories
+
+    # Top de busquedas
     top_words_searched = SearchesServices().get_top_words_searched()
 
-    university_list = Institution.objects.all()
-    searches = Searches.objects.all()
+    # Total de busquedas en el sitio
     total_searchs_sum = Searches.objects.aggregate(Sum('count'))
     total_searchs = total_searchs_sum['count__sum']
     total_searchs = 0 if total_searchs is None else total_searchs
+
+    # Total de universidades en el sitio
+    total_institution = len(university_list)
+
+    # Total de tesis en el sitio
     total_tesis = tesis_services.total_tesis
 
-    total_institution = len(university_list)
+    # Total de facultades en el sitio
+    total_faculty = facultyu_info.total_tesis
+
+    # Total de palabras diferentes
     total_words = len(searches)
-    all_full = Full.objects.all()
+
+    # Todas las tesis a mostrarse, ordenado de mas reciente a menos
+    all_full = Full.objects.all().order_by('-year', '-added_date')
+
+    # Se obtiene la primera tesis, la ultima de la lista, para sacar el dato desde que año tenemos tesis
     last = all_full.reverse()[0]
-    context = {'tesis_list': all_full, 'total_tesis': total_tesis, 'total_faculty': facultyu_info.total_tesis,
-               'init_year': last.year, 'total_institution': total_institution, 'total_words': total_words,
-               'total_searchs': total_searchs, 'outside_capital_percentage': facultyu_info.outside_capital_percentage,
-               'top_words_searched': top_words_searched, 'tesis_top_categories':tesis_top_categories}
+    init_year = last.year
+
+    # Porcentaje de tesis presentadas en el interior con respecto al total de tesis del pais
+    outside_capital_percentage = facultyu_info.outside_capital_percentage
+
+    context = {'tesis_list': all_full, 'total_tesis': total_tesis, 'total_faculty': total_faculty,
+               'init_year': init_year, 'total_institution': total_institution, 'total_words': total_words,
+               'total_searchs': total_searchs, 'outside_capital_percentage': outside_capital_percentage,
+               'top_words_searched': top_words_searched, 'tesis_top_categories': tesis_top_categories}
     return render(request, "index.html", context)
 
 
