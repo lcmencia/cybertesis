@@ -15,7 +15,7 @@ class ResumeServices:
         self.total_tesis_number = 0
 
     def generate_resume(self):
-        total_tesis = Tesis.objects.all()
+        total_tesis = Tesis.objects.all().order_by('-year', '-added_date')
         # Cuadradito 1
         # Total de tesis en el sitio
         self.total_tesis_number = len(total_tesis)
