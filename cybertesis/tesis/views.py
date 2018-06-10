@@ -1,13 +1,12 @@
 from django.contrib import messages
 from django.core import serializers
-from django.db.models import F, Sum
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
-from services.faculty import FacultyService
 from services.searches import SearchesServices
 from services.tesis import TesisServices
+from services.resume import ResumeServices
 
-from .models import Full, Searches, Institution, Category
+from .models import Full, Searches, Category
 
 
 def index(request):
@@ -19,60 +18,56 @@ def index(request):
         category_selected = data.get('category_id', 0)
         category_selected = int(category_selected)
         if category_selected > 0:
+            # La pagina esta siendo filtrada por una categoria
             category = Category.objects.get(pk=category_selected)
             category_name = category.category_name
-            #TODO 106. Aqui significa que se esta filtrando por una categoria, entonces traer todas las tesis de esa categoria
-            # Viendo la interfaz todos los cuadraditos menos el de busqueda tambien deberian modificarse para reflejar el estado
-            # de esa categoria o NO? Pensar para mañana
-
-    tesis_services = TesisServices()
-    tesis_services.generate_tesis_resume()
-    university_list = Institution.objects.all()
-    searches = Searches.objects.all()
-    facultyu_info = FacultyService()
-    facultyu_info.get_all_faculty_info()
-
-    # Top de categorias
-    tesis_top_categories = tesis_services.top_categories
-
-    # Top de busquedas
-    top_words_searched = SearchesServices().get_top_words_searched()
-
-    # Total de busquedas en el sitio
-    total_searchs_sum = Searches.objects.aggregate(Sum('count'))
-    total_searchs = total_searchs_sum['count__sum']
-    total_searchs = 0 if total_searchs is None else total_searchs
-
-    # Total de universidades en el sitio
-    total_institution = len(university_list)
-
-    # Total de tesis en el sitio
-    total_tesis = tesis_services.total_tesis
-
-    # Total de facultades en el sitio
-    total_faculty = facultyu_info.total_tesis
-
-    # Total de palabras diferentes
-    total_words = len(searches)
+            # TODO filtrar por categoria
 
     # Todas las tesis a mostrarse, ordenado de mas reciente a menos
     all_full = Full.objects.all().order_by('-year', '-added_date')
 
-    # Se obtiene la primera tesis, la ultima de la lista, para sacar el dato desde que año tenemos tesis
-    last = all_full.reverse()[0]
-    init_year = last.year
+    # Top de categorias
+    tesis_services = TesisServices()
+    tesis_services.generate_tesis_resume()
+    tesis_top_categories = tesis_services.top_categories
 
+    ################ Seccion resumen (4 cuadraditos) ################
+    resume_service = ResumeServices()
+    resume_service.generate_resume()
+    searches_services = SearchesServices()
+    searches_services.generate_resume()
+    ###### Cuadradito 1 ######
+    total_tesis = resume_service.total_tesis_number
+    init_year = resume_service.init_year
+    ###### Cuadradito 2 ######
+    # Total de universidades en el sitio
+    total_institution = resume_service.total_institution
+    # Total de facultades en el sitio
+    total_faculty = resume_service.total_faculty
+    ###### Cuadradito 3 ######
     # Porcentaje de tesis presentadas en el interior con respecto al total de tesis del pais
-    outside_capital_percentage = facultyu_info.outside_capital_percentage
-
+    outside_capital_percentage = resume_service.outside_capital_percentage
     # En la lista de tesis se evaluan la cantidad que hubo en cada año en el interior los ultimos 2 años para saber la tendencia
-    trending = tesis_services.trending
+    trending = resume_service.trending
+    ###### Cuadradito 4 ######
+    # Total de palabras diferentes
+    total_words = searches_services.total_words
+    # Total de busquedas en el sitio
+    total_searchs = searches_services.total_searchs
 
-    context = {'tesis_list': all_full, 'total_tesis': total_tesis, 'total_faculty': total_faculty, 'trending': trending,
-               'init_year': init_year, 'total_institution': total_institution, 'total_words': total_words,
-               'total_searchs': total_searchs, 'outside_capital_percentage': outside_capital_percentage,
-               'top_words_searched': top_words_searched, 'tesis_top_categories': tesis_top_categories,
-               'category_name': category_name, 'category_selected': category_selected}
+    ################ Seccion Top Tutores y Busquedas ################
+    # Top de busquedas
+    top_words_searched = searches_services.top_words_searched
+
+    context = {
+        'total_tesis': total_tesis, 'init_year': init_year,
+        'total_faculty': total_faculty, 'total_institution': total_institution,
+        'outside_capital_percentage': outside_capital_percentage, 'trending': trending,
+        'total_searchs': total_searchs, 'total_words': total_words,
+        'top_words_searched': top_words_searched,
+        'tesis_list': all_full,
+        'tesis_top_categories': tesis_top_categories,
+        'category_name': category_name, 'category_selected': category_selected}
     return render(request, "index.html", context)
 
 
