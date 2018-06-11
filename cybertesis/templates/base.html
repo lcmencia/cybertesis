@@ -8,9 +8,13 @@
 
     {% block styles %}{% endblock styles %}
 
+    {% block top_scripts %} {% endblock top_scripts %}
 </head>
 
 <body class="">
+
+    {% block init_body %} {% endblock init_body %}
+
     <div class="wrapper">
 
         {% block  left_categories_ranking %}{% endblock left_categories_ranking %}
@@ -20,7 +24,9 @@
             {% block nav_bar %}{% endblock nav_bar %}
 
             <div class="content">
-                {% include 'utils/messages.html' %}
+                {% block messages %}
+                    {% include 'utils/messages.html' %}
+                {% endblock messages %}
                 <div class="container-fluid">
                     {% block content %}{% endblock content %}
                 </div>

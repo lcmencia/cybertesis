@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'tesis',
+    'ajax',
 ]
 
 MIDDLEWARE = [
@@ -68,6 +69,16 @@ TEMPLATES = [
         },
     },
 ]
+
+# Códigos de respuesta HTTP
+HTTP_RESPONSE_CODES = {
+    'NO_CONTENT': 204,
+    'OK': 200,
+    'BAD_REQUEST': 400,
+    'NOT_FOUND': 404,
+    'FORBIDDEN': 403,
+    'PRECONDITION_FAILED': 412
+}
 
 WSGI_APPLICATION = 'cybertesis.wsgi.application'
 
