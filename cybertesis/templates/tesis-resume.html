@@ -58,7 +58,7 @@
                 <div class="col-md-8">
                     <div class="card">
                         <div class="card-header card-header-primary">
-                            <h4 class="card-title">{{ tesis.type|default:'' }}</h4>
+                            <h4 class="card-title">{{ tesis.type|default:''|translate }}</h4>
                             <p class="card-category">{{ tesis.title|default:'' }}</p>
                         </div>
                         <div class="card-body">
@@ -202,7 +202,7 @@
                 </div>
             </div>
             <div class="row m-top-20">
-                <div class="col-md-8 fb-comments" data-href="localhost:8000/tesis/{{ tesis.id }}"
+                <div class="col-md-8 fb-comments" data-href="{{ request.build_absolute_uri }}"
                      data-numposts="5"></div>
             </div>
         </div>

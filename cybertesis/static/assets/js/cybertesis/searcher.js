@@ -92,7 +92,7 @@ function renderTable(data){
         var career = fields.career_name;
         var faculty = fields.faculty_name;
         var institution = fields.institution_name;
-        var id = fields.id;
+        var id = data[i].pk;
         var rating = fields.rating;
         var newRowContent = "<tr><td><a href='/tesis/"+id+"/' target='_blank'>"+
                             "<span class='fa fa-external-link tesis-access-link'></span></a></td>"+

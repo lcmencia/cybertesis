@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django import template
 
 register = template.Library()
@@ -9,7 +10,7 @@ def no_star_range(val1, val2):
     try:
         a = int(val1)
         b = int(val2)
-        return ['x' for c in range(a-b)]
+        return ['x' for c in range(a - b)]
     except:
         return 0
 
@@ -20,3 +21,12 @@ def star_range(val):
     five_stars = ['*', '*', '*', '*', '*']
     return five_stars[:val]
 
+
+@register.filter(name='translate')
+def translate(val):
+    dictionary = {'T': 'Tesis', 'MS': 'Maestría', 'TMS': 'Tesis Maestría', 'TD': 'Tesis Doctoral'}
+    if val == '':
+        return ''
+    elif val in dictionary:
+        return dictionary[val]
+    return ''
