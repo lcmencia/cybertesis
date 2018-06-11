@@ -1,4 +1,4 @@
-from tesis.models import Full, Tesis, SubCategory
+from tesis.models import Tesis, SubCategory, TesisRanking
 
 
 class TesisServices:
@@ -6,6 +6,16 @@ class TesisServices:
     def __init__(self):
         self.LIMIT = 10
         self.top_categories = {}
+
+    @classmethod
+    def calculate_tesis_rating(cls, rating_list):
+        # Se calcula rating la lista de tesis
+        rating_total = 0
+        for rating in rating_list:
+            rating_total += rating.value
+        total_vote = len(rating_list)
+        return {'stars': 0 if total_vote == 0 else int(round(rating_total / total_vote)),
+                'total_vote': total_vote}
 
     def generate_tesis_resume(self):
         # Se obtiene la cantidad total de tesis
@@ -43,11 +53,17 @@ class TesisServices:
         self.top_categories = categories_list
 
     @classmethod
+    def get_tesis_rating(cls, tesis_id):
+        tesis_rating_list = TesisRanking.objects.filter(tesis_id=tesis_id)
+        return cls.calculate_tesis_rating(tesis_rating_list.all())
+
+    @classmethod
     def get_by_id(cls, tesis_id):
         tesis_data = {}
         try:
             tesis = Tesis.objects.get(id=tesis_id)
             if tesis:
+                tesis_data['id'] = tesis_id
                 tesis_data['title'] = tesis.title
                 tesis_data['career_name'] = tesis.career.name
                 tesis_data['postgraduate'] = tesis.career.postgraduate
@@ -61,6 +77,10 @@ class TesisServices:
                 tesis_data['type'] = tesis.tesis_type
                 tesis_data['add_date'] = tesis.added_date
                 tesis_data['description'] = tesis.description
+                # Calcular la cantidad de estrellas
+                rating_calculated = cls.calculate_tesis_rating(tesis.tesisranking_set.all())
+                tesis_data['stars'] = rating_calculated.get('stars', 0)
+                tesis_data['total_vote'] = rating_calculated.get('total_vote', 0)
                 tutors = []
                 for tutor in tesis.tutor.all()[:2]:
                     tutors.append(tutor.name)
