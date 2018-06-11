@@ -121,10 +121,11 @@ class TesisRanking(models.Model):
     value = models.IntegerField(default=0)
     vote_by = models.IntegerField(null=True)
     user_name = models.TextField()
-    user_email = models.TextField(unique=True)
+    user_email = models.TextField()
 
     class Meta:
         db_table = 'tesis_tesis_ranking'
+        unique_together = ('tesis_id', 'user_email')
 
 
 class Category(models.Model):
