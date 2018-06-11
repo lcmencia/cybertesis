@@ -1,4 +1,4 @@
-from tesis.models import Tesis, SubCategory
+from tesis.models import Full, Tesis, SubCategory
 
 
 class TesisServices:
@@ -73,3 +73,24 @@ class TesisServices:
         except Exception as e:
             return None
         return tesis_data
+
+    @classmethod
+    def get_by_category(cls, category_id):
+        tesis_all = Tesis.objects.all()
+        tesis_id_list = set()
+        all_full = None
+        for t in tesis_all:
+            # Por cada tesis vemos a que subcategorias esta linkeada
+            sub_categories = t.sub_category.all()
+            for sc in sub_categories:
+                # Por cada subcategoria vemos a que categoria esta linkeada
+                categories = sc.categories.all()
+                for cat in categories:
+                    # Por cada categoria, si la categoria es la filtrada esa tesis se agrega a la lista de ID de tesis
+                    if cat.id == category_id:
+                        tesis_id_list.add(t.id)
+                        break
+        if len(tesis_id_list) > 0:
+            # Si la lista de ID de tesis no esta vacia, mostrar solo esas tesis
+            all_full = Full.objects.filter(pk__in=list(tesis_id_list)).order_by('-year', '-added_date')
+        return all_full
