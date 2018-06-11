@@ -2,13 +2,14 @@ from django.contrib import messages
 from django.core import serializers
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
+from django.views.decorators.http import require_http_methods
 from services.searches import SearchesServices
 from services.tesis import TesisServices
 from services.resume import ResumeServices
 
 from .models import Full, Searches, Category
 
-
+@require_http_methods(['GET'])
 def index(request):
     data = request.GET
     category_selected = 0
@@ -73,7 +74,7 @@ def index(request):
         'category_name': category_name, 'category_selected': category_selected}
     return render(request, "index.html", context)
 
-
+@require_http_methods(['GET'])
 def search(request):
     data = request.GET
     search = data.get('search_text', '').lower()
@@ -105,7 +106,7 @@ def search(request):
     the_data = serializers.serialize("json", [x for x in total_full])
     return HttpResponse(the_data, content_type='application/json')
 
-
+@require_http_methods(['GET'])
 def tesis(request, tesis_id=None):
     tesis_data = {}
     if tesis_id:
