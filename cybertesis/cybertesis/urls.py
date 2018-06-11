@@ -13,8 +13,9 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.conf.urls import url
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from tesis import views
 from django.contrib.auth import views as auth_views
 from django.conf.urls.static import static
@@ -28,6 +29,7 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('search/', views.search, name='search'),
     path('tesis/<int:tesis_id>/', views.tesis, name='tesis'),
+    url(r'^ajax/', include('ajax.urls')),
 ]
 
 if settings.DEBUG:

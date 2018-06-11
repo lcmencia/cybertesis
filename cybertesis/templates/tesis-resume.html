@@ -1,18 +1,55 @@
 {% extends "base.html" %}
-{% load static %}
+{% load static custom_filters %}
 
 {% block styles %}
     {% include 'utils/base_styles.html' %}
     <!-- Estilos de la página principal -->
     <link href="{% static 'assets/css/index.css' %}" type="text/css" rel="stylesheet"/>
     <!-- end -->
+
+    <!-- star rating -->
+    {#    <link href="http://netdna.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.css" rel="stylesheet">#}
+    <link href="{% static 'assets/css/pluging/star-rating.min.css' %}" media="all" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'assets/css/pluging/theme.css' %}" media="all" rel="stylesheet"
+          type="text/css"/>
+    <!-- end -->
 {% endblock styles %}
+{% block top_scripts %}
+    <script>
+        var csrf = '{{ csrf_token }}'
+        var sendTesisRatingUrl = '{% url 'ajax_add_rating' %}';
+    </script>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.js"></script>
+    <script src="{% static 'assets/js/tesis-star-rating.js' %}"></script>
+{% endblock top_scripts %}
 
 {% block left_categories_ranking %}
     <!-- Side bar: ranking de categorías -->
     {% include 'sections/tesis-resume-left-panel.html' %}
     <!-- End ranking de categorías -->
 {% endblock left_categories_ranking %}
+
+{% block init_body %}
+    <div id="fb-root"></div>
+    <script>
+        /* Inicio facebook commnets script */
+        (function (d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) return;
+            js = d.createElement(s);
+            js.id = id;
+            js.src = 'https://connect.facebook.net/es_ES/sdk.js#xfbml=1&version=v3.0&appId=2097400377149496&autoLogAppEvents=1';
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+        /* Fin de facebook script */
+    </script>
+{% endblock init_body %}
+
+{% block messages %}
+    {% include 'utils/messages.html' %}
+    <div id = "alert_placeholder"></div>
+{% endblock messages %}
 
 {% block content %}
     <div class="content">
@@ -21,7 +58,7 @@
                 <div class="col-md-8">
                     <div class="card">
                         <div class="card-header card-header-primary">
-                            <h4 class="card-title">{{ tesis.type|default:'' }}</h4>
+                            <h4 class="card-title">{{ tesis.type|default:''|translate }}</h4>
                             <p class="card-category">{{ tesis.title|default:'' }}</p>
                         </div>
                         <div class="card-body">
@@ -106,12 +143,6 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div style="margin: 40px">
-                                    <span class="pull-right" style="font-family:Roboto, Helvetica, Arial, sans-serif
-;font-size: 18px; color: dimgray">123</span>
-                                    <span class="fa fa-thumbs-o-up pull-right"
-                                          style="font-size: 28px; color: #8e24aa"></span>
-                                </div>
                                 <div class="clearfix"></div>
                             </form>
                         </div>
@@ -137,6 +168,86 @@
                     </div>
                 </div>
             </div>
+            <div class="row">
+                <div id="rating-star-container" class="col-md-4">
+                    {% with tesis.stars as rating %}
+                        <div>
+                            <b><span id="rating-total-vote-value">{{ tesis.total_vote }}{% if tesis.total_vote == 1 %}
+                                voto {% else %}
+                                votos{% endif %}</span></b>
+                        </div>
+                        <div>
+                            <span>Valoración: <b><span id="rating-stars-value">{{ rating }}{% if rating == 1 %}
+                                estrella {% else %}
+                                estrellas{% endif %}</span></b></span>
+                        </div>
+                        <div id="stars-of-rating-container">
+                            {% with rating|star_range as range %}
+                                {% for i in range %}
+                                    <i class="rating-stars filled-stars fa fa-star"></i>
+                                {% endfor %}
+                            {% endwith %}
+                            {% for i in 5|no_star_range:rating %}
+                                <i class="rating-stars empty-stars fa fa-star-o"></i>
+                            {% endfor %}
+                        </div>
+                    {% endwith %}
+                    <!-- Button trigger modal -->
+                    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#ratingModal">
+                        Valorar
+                    </button>
+                </div>
+                <div id="rating-star-container-spinner" class="col-md-4" style="display: none">
+                    <img src="{% static 'assets/img/utils/spinner-1s-200px.gif' %}" style="width: 80px; height: 80px;">
+                </div>
+            </div>
+            <div class="row m-top-20">
+                <div class="col-md-8 fb-comments" data-href="{{ request.build_absolute_uri }}"
+                     data-numposts="5"></div>
+            </div>
+        </div>
+    </div>
+    <!-- Raing Modal -->
+    <div class="modal fade" id="ratingModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Valoración de Tesis</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form class="needs-validation" novalidate>
+                        <div class="form-group">
+                            <label for="user-name" class="bmd-label-floating">Nombre y Apellido</label>
+                            <input type="text" class="form-control" id="user-name" placeholder="" autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <label for="user-email" class="bmd-label-floating">Dirección de correo (no será revelado)</label>
+                            <input type="email" class="form-control" id="user-email" placeholder="" autocomplete="off">
+                        </div>
+                    </form>
+                    <div style="display: block;">
+                        <div id="rating-caption-container"></div>
+                        <div style="display: inline-block">
+                            <div style="display: inline-block;">
+                                <input id="star-rating-holder" name="input-1" class="rating rating-loading" data-min="0"
+                                       data-max="5"
+                                       data-step="1" data-size="sm">
+                            </div>
+                            <div id="rating-clear-container" style="display: inline-block;"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="sendTesisRating({{ tesis.id }})">Enviar
+                        valoración
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 {% endblock content %}
@@ -147,4 +258,6 @@
 
 {% block bottom_js %}
     {% include 'utils/base_js.html' %}
+    <script src="{% static 'assets/js/plugins/star-rating-mod.js' %}"></script>
+    <script src="{% static 'assets/js/plugins/theme.js' %}"></script>
 {% endblock bottom_js %}

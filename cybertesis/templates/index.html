@@ -29,10 +29,10 @@
                 <span class="navbar-toggler-icon icon-bar"></span>
             </button>
             <div class="collapse navbar-collapse justify-content-end" id="navigation">
-                <form class="navbar-form col-md-6" method="get">
+                <form class="navbar-form col-md-6" method="get" onsubmit="return false;">
                     <div class="input-group no-border">
-                        <input id="buscador_principal" type="text" value="" class="form-control"
-                               placeholder="Buscar en todas las tesis disponibles...">
+                        <input id="buscador_principal" type="text" value="" class="form-control" autocomplete="off"
+                               placeholder="Buscar en las tesis...">
                         <button id="buscador_principal_btn" type="button"
                                 class="btn btn-white btn-round btn-just-icon">
                             <i class="material-icons">search</i>

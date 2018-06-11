@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'tesis',
+    'ajax',
 ]
 
 MIDDLEWARE = [
@@ -82,16 +83,16 @@ WSGI_APPLICATION = 'cybertesis.wsgi.application'
 #     }
 # }
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'cybertesis',
-        'USER': 'postgres',
-        'PASSWORD': '',
-        'HOST': 'localhost',
-        'PORT': '5432',
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'cybertesis',
+#         'USER': 'postgres',
+#         'PASSWORD': '',
+#         'HOST': 'localhost',
+#         'PORT': '5432',
+#     }
+# }
 
 MESSAGE_TAGS = {
     messages.DEBUG: 'alert-info',
@@ -149,6 +150,18 @@ project_home = u'/Users/lcmencia/PycharmProjects/cybertesis/cybertesis/cybertesi
 
 try:
     from tesis import local_settings
+
     print("Local settings imported successfully.")
 except Exception as e:
     print("Exception importing Local Settings -> " + str(e))
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'cybertesis',
+        'USER': 'postgres',
+        'PASSWORD': '',
+        'HOST': 'localhost',
+        'PORT': '5432',
+    }
+}
