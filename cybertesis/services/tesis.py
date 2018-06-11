@@ -1,5 +1,7 @@
 from tesis.models import Tesis, SubCategory, TesisRanking, Full
 
+from tesis.constants import ORDER_BY_MOST_RECENT, ORDER_BY_MOST_VALUED
+
 
 class TesisServices:
 
@@ -95,22 +97,31 @@ class TesisServices:
         return tesis_data
 
     @classmethod
-    def get_by_category(cls, category_id):
+    def get_by_category(cls, category_id, order):
         tesis_all = Tesis.objects.all()
         tesis_id_list = set()
         all_full = None
-        for t in tesis_all:
-            # Por cada tesis vemos a que subcategorias esta linkeada
-            sub_categories = t.sub_category.all()
-            for sc in sub_categories:
-                # Por cada subcategoria vemos a que categoria esta linkeada
-                categories = sc.categories.all()
-                for cat in categories:
-                    # Por cada categoria, si la categoria es la filtrada esa tesis se agrega a la lista de ID de tesis
-                    if cat.id == category_id:
-                        tesis_id_list.add(t.id)
-                        break
-        if len(tesis_id_list) > 0:
+        if category_id > 0:
+            for t in tesis_all:
+                # Por cada tesis vemos a que subcategorias esta linkeada
+                sub_categories = t.sub_category.all()
+                for sc in sub_categories:
+                    # Por cada subcategoria vemos a que categoria esta linkeada
+                    categories = sc.categories.all()
+                    for cat in categories:
+                        # Por cada categoria, si la categoria es la filtrada esa tesis se agrega a la lista de ID de tesis
+                        if cat.id == category_id:
+                            tesis_id_list.add(t.id)
+                            break
+        if len(tesis_id_list) > 0 and category_id > 0:
             # Si la lista de ID de tesis no esta vacia, mostrar solo esas tesis
-            all_full = Full.objects.filter(pk__in=list(tesis_id_list)).order_by('-year', '-added_date')
+            if order == ORDER_BY_MOST_RECENT:
+                all_full = Full.objects.filter(pk__in=list(tesis_id_list)).order_by('-year', '-added_date')
+            elif order == ORDER_BY_MOST_VALUED:
+                all_full = Full.objects.filter(pk__in=list(tesis_id_list)).order_by('-rating', '-year', '-added_date')
+        else:
+            if order == ORDER_BY_MOST_RECENT:
+                all_full = Full.objects.all().order_by('-year', '-added_date')
+            elif order == ORDER_BY_MOST_VALUED:
+                all_full = Full.objects.all().order_by('-rating', '-year', '-added_date')
         return all_full

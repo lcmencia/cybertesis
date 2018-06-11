@@ -11,18 +11,19 @@ Tip 2: you can also add an image using data-image tag
     </div>
     <div class="sidebar-wrapper">
         {% if tesis_top_categories %}
-            <ul class="nav">
-                    {% for category in tesis_top_categories %}
-                        <li class="nav-item {% if category_selected == category.id %} active {% endif %}">
-                            <a class="nav-link" href="?category_id={{ category.id }}">
-                                {{ category.category_icon |safe }}
-                                <p>{{ category.category_name }}</p>
-                            </a>
-                        </li>
-                    {% endfor %}
-            </ul>
+        <ul class="nav">
+            {% for category in tesis_top_categories %}
+            <li id="cat_{{ category.id }}" style="cursor: default;"
+                class="nav-item category-item {% if category_selected == category.id %} active {% endif %}">
+                <a class="nav-link">
+                    {{ category.category_icon |safe }}
+                    <p>{{ category.category_name }}</p>
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
         {% else %}
-            <p>No existe ranking de categorías</p>
+        <p>No existe ranking de categorías</p>
         {% endif %}
     </div>
 </div>

@@ -7,8 +7,8 @@ from services.searches import SearchesServices
 from services.tesis import TesisServices
 from services.resume import ResumeServices
 
-from tesis.constants import ORDER_BY_MOST_RECENT, ORDER_BY_MOST_VALUED
-from .models import Full, Searches, Category
+from .constants import ORDER_BY_MOST_RECENT
+from .models import Searches, Category
 
 
 @require_http_methods(['GET'])
@@ -31,10 +31,7 @@ def index(request):
             category_name = category.category_name
 
     # Todas las tesis a mostrarse, ordenado de mas reciente a menos
-    if category_selected == 0:
-        all_full = Full.objects.all().order_by('-year', '-added_date')
-    else:
-        all_full = tesis_services.get_by_category(category_selected)
+    all_full = tesis_services.get_by_category(category_selected, ORDER_BY_MOST_RECENT)
 
     ################ Seccion resumen (4 cuadraditos) ################
     resume_service = ResumeServices()
@@ -79,23 +76,12 @@ def index(request):
 @require_http_methods(['GET'])
 def search(request):
     data = request.GET
-    category_id = data.get('category_id', 0)
+    category_id = int(data.get('category_id', 0))
     order = int(data.get('order', ORDER_BY_MOST_RECENT))
     search = data.get('search_text', '').lower()
     tesis_services = TesisServices()
     total_full = list()
-    all_full = list()
-
-    if order == ORDER_BY_MOST_RECENT:
-        if category_id > 0:
-            all_full = tesis_services.get_by_category(category_id)
-        else:
-            all_full = Full.objects.all().order_by('-year', '-added_date')
-    elif order == ORDER_BY_MOST_VALUED:
-        if category_id > 0:
-            all_full = tesis_services.get_by_category(category_id)
-        else:
-            all_full = Full.objects.all().order_by('-rating', '-year', '-added_date')
+    all_full = tesis_services.get_by_category(category_id, order)
 
     if len(search) > 0:
         for full in all_full:

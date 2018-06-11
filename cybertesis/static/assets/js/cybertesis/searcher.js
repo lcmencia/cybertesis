@@ -2,7 +2,28 @@ $(document).ready(function() {
     var $buscador_principal = $("#buscador_principal");
     var $buscador_principal_btn = $("#buscador_principal_btn");
 
+    var $category_items = $(".category-item");
+    $category_items.on("click", function(){
+        // Por cada categoria en la lista de la izquierda, al hacer click sobre ella se filtran los resultados
+        // Al realizar el click sobre una seleccionada, se elimina el filtro
+        var active = $(this).hasClass("active");
+        if (active){
+            window.location = window.location.href.split("?")[0];
+        }else{
+            $(".category-item").removeClass("active");
+            $(this).addClass("active");
+            var id = this.id.split("_")[1];
+            var href = document.location.href;
+            if(href.indexOf("?") !== -1) {
+                href = href.split("?")[0]
+            }
+            var url = href+"?category_id="+id;
+            document.location = url;
+        }
+    });
+
     $buscador_principal_btn.on("click", function(){
+        // Boton para realizar la busquedda
         var search_text = $("#buscador_principal").val();
         if (search_text.length > 2){
             ajax_search_text(search_text, 1);
@@ -10,6 +31,7 @@ $(document).ready(function() {
     });
 
     $buscador_principal.on("keyup", function(e){
+        // Tecla enter en buscador principal ejecuta la busqueda
         if (e.keyCode == 13) {
             var search_text = $(this).val();
             if (search_text.length > 2){
@@ -21,6 +43,7 @@ $(document).ready(function() {
 
 
 function ajax_search_text(search_text, order){
+    // Funcion para buscar una palabra y ordenar resultados
     data = {'order': order, 'search_text': search_text};
     var category_id = getUrlParameter('category_id');
     if (category_id != undefined){
@@ -45,6 +68,7 @@ function ajax_search_text(search_text, order){
 }
 
 var getUrlParameter = function getUrlParameter(sParam) {
+    // Obtiene el valor de un parametro en la url
     var sPageURL = decodeURIComponent(window.location.search.substring(1)),
     sURLVariables = sPageURL.split('&'),sParameterName,i;
 
@@ -57,6 +81,7 @@ var getUrlParameter = function getUrlParameter(sParam) {
 };
 
 function renderTable(data){
+    // Genera la tabla de lista de tesis con los datos recibidos
     console.log("DATA: " + data);
     var $results_body = $("#results_body");
     $results_body.empty();
