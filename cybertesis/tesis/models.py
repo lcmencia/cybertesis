@@ -55,7 +55,8 @@ class Faculty(models.Model):
     lon = models.FloatField(null=True)
     lat = models.FloatField(null=True)
     address = models.CharField(max_length=200, null=True)
-    department_id = models.ForeignKey('PyDepartments', on_delete=models.CASCADE, to_field='department_id', default=0, db_column='department_id')
+    department_id = models.ForeignKey('PyDepartments', on_delete=models.CASCADE, to_field='department_id', default=0,
+                                      db_column='department_id')
 
 
 class Career(models.Model):
@@ -119,6 +120,8 @@ class TesisRanking(models.Model):
     date_vote = models.DateTimeField(auto_now=True, db_column='date_vote')
     value = models.IntegerField(default=0)
     vote_by = models.IntegerField(null=True)
+    user_name = models.TextField()
+    user_email = models.TextField(unique=True)
 
     class Meta:
         db_table = 'tesis_tesis_ranking'
@@ -139,4 +142,3 @@ class SubCategory(models.Model):
 
     class Meta:
         db_table = 'tesis_sub_category'
-

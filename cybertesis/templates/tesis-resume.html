@@ -16,6 +16,7 @@
 {% endblock styles %}
 {% block top_scripts %}
     <script>
+        var csrf = '{{ csrf_token }}'
         var sendTesisRatingUrl = '{% url 'ajax_add_rating' %}';
     </script>
 
@@ -220,12 +221,12 @@
                 <div class="modal-body">
                     <form class="needs-validation" novalidate>
                         <div class="form-group">
-                            <label for="formGroupExampleInput" class="bmd-label-floating">Nombre y Apellido</label>
-                            <input type="text" class="form-control" id="user-name" placeholder="">
+                            <label for="user-name" class="bmd-label-floating">Nombre y Apellido</label>
+                            <input type="text" class="form-control" id="user-name" placeholder="" autocomplete="off">
                         </div>
                         <div class="form-group">
-                            <label for="exampleFormControlInput1" class="bmd-label-floating">Dirección de correo</label>
-                            <input type="email" class="form-control" id="user-email" placeholder="">
+                            <label for="user-email" class="bmd-label-floating">Dirección de correo (no será revelado)</label>
+                            <input type="email" class="form-control" id="user-email" placeholder="" autocomplete="off">
                         </div>
                     </form>
                     <div style="display: block;">

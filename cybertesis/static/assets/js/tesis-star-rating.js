@@ -36,6 +36,7 @@ function sendTesisRating(tesisId) {
         method: 'post',
         url: sendTesisRatingUrl,
         data: {
+            csrfmiddlewaretoken: csrf,
             rate: ratingValue,
             tesis_id: tesisId,
             user_name: $("#user-name").val(),
