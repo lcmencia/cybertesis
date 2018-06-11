@@ -1,4 +1,4 @@
-from tesis.models import Tesis, SubCategory, TesisRanking
+from tesis.models import Tesis, SubCategory, TesisRanking, Full
 
 
 class TesisServices:
