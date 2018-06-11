@@ -1,0 +1,39 @@
+/*!
+ * Krajee Font Awesome Theme styling for bootstrap-star-rating.
+ * This file must be loaded after 'star-rating.css'.
+ *
+ * @see http://github.com/kartik-v/bootstrap-star-rating
+ * @author Kartik Visweswaran <kartikv2@gmail.com>
+ */
+.theme-krajee-fa .star {
+    font-size: 1.1em;
+}
+
+.theme-krajee-fa .caption {
+    margin-top: -0.2em;
+}
+
+#rating-caption-container span {
+    border-radius: 25px;
+    padding: 3px;
+}
+
+#rating-clear-container {
+    display: inline-block;
+    font-size: 1.7em;
+    margin: 10px;
+    color: #b30000;
+}
+
+.rating-stars{
+    font-size: 28px;
+    color: #e2b603;
+}
+
+.empty-stars{
+    color: #cccccc!important;
+}
+
+.m-top-20{
+    margin-top: 20px;
+}

@@ -117,6 +117,7 @@ class Searches(models.Model):
 class TesisRanking(models.Model):
     tesis_id = models.ForeignKey('Tesis', on_delete=models.CASCADE, db_column='tesis_id')
     date_vote = models.DateTimeField(auto_now=True, db_column='date_vote')
+    value = models.IntegerField(default=0)
     vote_by = models.IntegerField(null=True)
 
     class Meta:
@@ -138,3 +139,4 @@ class SubCategory(models.Model):
 
     class Meta:
         db_table = 'tesis_sub_category'
+
