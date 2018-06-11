@@ -93,6 +93,7 @@ class Tesis(models.Model):
 
 
 class Full(models.Model):
+    id = models.IntegerField(primary_key=True)
     title = models.TextField()
     description = models.TextField()
     year = models.PositiveIntegerField()

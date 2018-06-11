@@ -5,9 +5,10 @@ from django.http import HttpResponse
 import django
 from django.views.decorators.http import require_http_methods
 
-from cybertesis.settings import HTTP_RESPONSE_CODES
 from tesis.models import TesisRanking, Tesis
 from services.tesis import TesisServices
+
+from tesis.constants import HTTP_RESPONSE_CODES
 
 
 @require_http_methods(['POST'])

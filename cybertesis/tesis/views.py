@@ -7,14 +7,15 @@ from services.searches import SearchesServices
 from services.tesis import TesisServices
 from services.resume import ResumeServices
 
+from tesis.constants import ORDER_BY_MOST_RECENT, ORDER_BY_MOST_VALUED
 from .models import Full, Searches, Category
+
 
 @require_http_methods(['GET'])
 def index(request):
     data = request.GET
     category_selected = 0
     category_name = ''
-    all_full = None
 
     # Top de categorias
     tesis_services = TesisServices()
@@ -74,14 +75,29 @@ def index(request):
         'category_name': category_name, 'category_selected': category_selected}
     return render(request, "index.html", context)
 
+
 @require_http_methods(['GET'])
 def search(request):
     data = request.GET
+    category_id = data.get('category_id', 0)
+    order = int(data.get('order', ORDER_BY_MOST_RECENT))
     search = data.get('search_text', '').lower()
+    tesis_services = TesisServices()
     total_full = list()
+    all_full = list()
+
+    if order == ORDER_BY_MOST_RECENT:
+        if category_id > 0:
+            all_full = tesis_services.get_by_category(category_id)
+        else:
+            all_full = Full.objects.all().order_by('-year', '-added_date')
+    elif order == ORDER_BY_MOST_VALUED:
+        if category_id > 0:
+            all_full = tesis_services.get_by_category(category_id)
+        else:
+            all_full = Full.objects.all().order_by('-rating', '-year', '-added_date')
+
     if len(search) > 0:
-        # Cuando se realiza una busqueda obtenemos todas las tesis
-        all_full = Full.objects.all()
         for full in all_full:
             # Por cada tesis se iteran sus columnas para ver si la palabra existe
             # Esto puede ser demasiado costoso, por eso la vista de donde se obtienen las tesis
@@ -102,9 +118,12 @@ def search(request):
             if obj.count is None:
                 obj.count = 1
         obj.save()
+    else:
+        total_full = all_full
 
     the_data = serializers.serialize("json", [x for x in total_full])
     return HttpResponse(the_data, content_type='application/json')
+
 
 @require_http_methods(['GET'])
 def tesis(request, tesis_id=None):

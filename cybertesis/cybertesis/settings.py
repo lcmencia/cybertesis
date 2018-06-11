@@ -70,16 +70,6 @@ TEMPLATES = [
     },
 ]
 
-# Códigos de respuesta HTTP
-HTTP_RESPONSE_CODES = {
-    'NO_CONTENT': 204,
-    'OK': 200,
-    'BAD_REQUEST': 400,
-    'NOT_FOUND': 404,
-    'FORBIDDEN': 403,
-    'PRECONDITION_FAILED': 412
-}
-
 WSGI_APPLICATION = 'cybertesis.wsgi.application'
 
 # Database
@@ -151,9 +141,20 @@ STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'mediafiles')
 
-
 try:
     from tesis import local_settings
+
     print("Local settings imported successfully.")
 except Exception as e:
     print("Exception importing Local Settings -> " + str(e))
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'cybertesis',
+        'USER': 'postgres',
+        'PASSWORD': '',
+        'HOST': 'localhost',
+        'PORT': '5432',
+    }
+}

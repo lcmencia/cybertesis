@@ -4,50 +4,77 @@ $(document).ready(function() {
 
     $buscador_principal_btn.on("click", function(){
         var search_text = $("#buscador_principal").val();
-        ajax_search_text(search_text);
+        if (search_text.length > 2){
+            ajax_search_text(search_text, 1);
+        }
     });
 
-//    $buscador_principal.on("change keyup paste", function(){
-//        var search_text = $(this).val();
-//        ajax_search_text(search_text);
-//    });
+    $buscador_principal.on("keyup", function(e){
+        if (e.keyCode == 13) {
+            var search_text = $(this).val();
+            if (search_text.length > 2){
+                ajax_search_text(search_text, 1);
+            }
+        }
+    });
 });
 
 
-function ajax_search_text(search_text){
-    if (search_text.length > 2){
-            $.ajax({
-                url: searchUrl,
-                type: 'GET',
-                data: {
-                    search_text: search_text
-                },
-                success: function(data){
-                    console.log("DATA: " + data);
-                    var $results_body = $("#results_body");
-                    $results_body.empty();
-                    for(var i = 0; i < data.length; i++){
-                        var fields = data[i].fields
-                        var title = fields.title;
-                        var year = fields.year;
-                        var career = fields.career_name;
-                        var faculty = fields.faculty_name;
-                        var institution = fields.institution_name;
+function ajax_search_text(search_text, order){
+    data = {'order': order, 'search_text': search_text};
+    var category_id = getUrlParameter('category_id');
+    if (category_id != undefined){
+        data['category_id'] = category_id;
+    }
 
-                        var newRowContent = "<tr><td style='text-overflow: ellipsis;'>"+title+"</td><td>"+career+"</td><td>"+
-                            faculty+"</td><td>"+institution+"</td><td class='text-primary'>"+year+"</td></tr>";
-                        $results_body.append(newRowContent);
-                    }
-                },
-                error: function(jqXHR, textStatus, errorThrown){
-                    console.log(jqXHR);
-                    console.log(textStatus);
-                    console.log(errorThrown);
-                },
-                complete: function(result){
-                    console.log("ALWAYS");
-                },
-            });
-            console.log(search_text);
+    $.ajax({
+        url: searchUrl,
+        type: 'GET',
+        data: data,
+        success: function(data){
+            renderTable(data);
+        },
+        error: function(jqXHR, textStatus, errorThrown){
+            console.log(jqXHR);
+            console.log(textStatus);
+            console.log(errorThrown);
+        },
+        complete: function(result){
+        },
+    });
+}
+
+var getUrlParameter = function getUrlParameter(sParam) {
+    var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+    sURLVariables = sPageURL.split('&'),sParameterName,i;
+
+    for (i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
+        if (sParameterName[0] === sParam) {
+            return sParameterName[1] === undefined ? true : sParameterName[1];
+        }
+    }
+};
+
+function renderTable(data){
+    console.log("DATA: " + data);
+    var $results_body = $("#results_body");
+    $results_body.empty();
+    for(var i = 0; i < data.length; i++){
+        var fields = data[i].fields
+        var title = fields.title;
+        var year = fields.year;
+        var career = fields.career_name;
+        var faculty = fields.faculty_name;
+        var institution = fields.institution_name;
+        var id = fields.id;
+        var rating = fields.rating;
+        var newRowContent = "<tr><td><a href='/tesis/"+id+"/' target='_blank'>"+
+                            "<span class='fa fa-external-link tesis-access-link'></span></a></td>"+
+                            "<td style='text-overflow: ellipsis;'>"+title+"</td><td>"+career+"</td><td>"+
+                            faculty+"</td><td>"+institution+"<td style='text-align: center;'>"+rating+
+                            "<i class='rating-stars filled-stars fa fa-star'></i></td>"+
+                            "</td><td class='text-primary'>"+year+"</td></tr>";
+        $results_body.append(newRowContent);
     }
 }
