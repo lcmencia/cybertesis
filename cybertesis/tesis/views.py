@@ -13,6 +13,12 @@ def index(request):
     data = request.GET
     category_selected = 0
     category_name = ''
+    all_full = None
+
+    # Top de categorias
+    tesis_services = TesisServices()
+    tesis_services.generate_tesis_resume()
+    tesis_top_categories = tesis_services.top_categories
 
     if len(data) > 0:
         category_selected = data.get('category_id', 0)
@@ -21,15 +27,12 @@ def index(request):
             # La pagina esta siendo filtrada por una categoria
             category = Category.objects.get(pk=category_selected)
             category_name = category.category_name
-            # TODO filtrar por categoria
 
     # Todas las tesis a mostrarse, ordenado de mas reciente a menos
-    all_full = Full.objects.all().order_by('-year', '-added_date')
-
-    # Top de categorias
-    tesis_services = TesisServices()
-    tesis_services.generate_tesis_resume()
-    tesis_top_categories = tesis_services.top_categories
+    if category_selected == 0:
+        all_full = Full.objects.all().order_by('-year', '-added_date')
+    else:
+        all_full = tesis_services.get_by_category(category_selected)
 
     ################ Seccion resumen (4 cuadraditos) ################
     resume_service = ResumeServices()
