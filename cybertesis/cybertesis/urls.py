@@ -27,7 +27,6 @@ urlpatterns = [
     path('search/', views.search, name='search'),
     path('tesis/<int:tesis_id>/', views.tesis, name='tesis'),
     url(r'^ajax/', include('ajax.urls')),
-    url(r'^comments/', include('django_comments.urls')),
 ]
 
 if settings.DEBUG:
