@@ -41,6 +41,9 @@
                             Institución
                         </th>
                         <th>
+                            Valoración
+                        </th>
+                        <th>
                             Año
                         </th>
                         </thead>
@@ -62,6 +65,9 @@
                                 </td>
                                 <td>
                                     {{ item.institution_name }}
+                                </td>
+                                <td style="text-align: center;">
+                                    {{ item.rating }} <i class="rating-stars filled-stars fa fa-star"></i>
                                 </td>
                                 <td class="text-primary">
                                     {{ item.year }}

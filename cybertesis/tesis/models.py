@@ -105,6 +105,7 @@ class Full(models.Model):
     authors = models.TextField()
     tutors = models.TextField()
     added_date = models.DateTimeField()
+    rating = models.IntegerField()
 
     class Meta:
         managed = False

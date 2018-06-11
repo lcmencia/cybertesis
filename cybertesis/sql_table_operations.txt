@@ -7,8 +7,11 @@ declare
 begin
     create or replace view tesis_full
 as
-select t.id as id, t.added_date, t.title, t.description, t.year, t.career_id, tc.name as career_name, tf.name as faculty_name, tf.place,
-ti.id as institution_id, ti.name as institution_name, array_to_string(array_agg(distinct aa.name),',') AS authors, array_to_string(array_agg(distinct at.name),',') AS tutors
+select t.id as id, t.added_date, t.title, t.description, t.year, t.career_id, tc.name as career_name,
+tf.name as faculty_name, tf.place, ti.id as institution_id, ti.name as institution_name,
+array_to_string(array_agg(distinct aa.name),',') AS authors,
+array_to_string(array_agg(distinct at.name),',') AS tutors,
+round(coalesce(avg(tr.value),0),0) as rating
 from tesis_tesis t
 join tesis_career tc on tc.id = t.career_id
 join tesis_faculty tf on tf.id = tc.faculty_id
@@ -17,6 +20,7 @@ join tesis_tesis_author tta on tta.tesis_id = t.id
 join tesis_person aa on tta.person_id = aa.id
 join tesis_tesis_tutor ttt on ttt.tesis_id = t.id
 join tesis_person at on ttt.person_id = at.id
+left join tesis_tesis_ranking tr on tr.tesis_id = t.id
 group by t.id, t.added_date, t.title, t.description, t.year, t.career_id, tc.name, tf.name, tf.place, ti.id, ti.name
 order by t.year DESC, t.added_date DESC;
 end;
