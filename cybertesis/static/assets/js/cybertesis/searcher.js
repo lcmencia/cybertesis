@@ -55,7 +55,10 @@ function ajax_search_text(search_text, order){
         type: 'GET',
         data: data,
         success: function(data){
-            renderTable(data);
+            renderResultadosTesis($.parseJSON(data.tesis_list));
+            renderResultadosTutors(data.tutors_list);
+            renderTopSearchedWords(data.top_words_searched);
+            renderSearchStats(data.total_words, data.total_searchs);
         },
         error: function(jqXHR, textStatus, errorThrown){
             console.log(jqXHR);
@@ -80,7 +83,7 @@ var getUrlParameter = function getUrlParameter(sParam) {
     }
 };
 
-function renderTable(data){
+function renderResultadosTesis(data){
     // Genera la tabla de lista de tesis con los datos recibidos
     console.log("DATA: " + data);
     var $results_body = $("#results_body");
@@ -102,4 +105,45 @@ function renderTable(data){
                             "</td><td class='text-primary'>"+year+"</td></tr>";
         $results_body.append(newRowContent);
     }
+}
+
+function renderResultadosTutors(data){
+    // Genera la tabla de lista de tesis con los datos recibidos
+    var $results_body = $("#recommend-tutors-body");
+    $results_body.empty();
+    for (var i = 0; i < data.length; i++) {
+        var fields = data[i];
+        var name = fields.name;
+        var category = fields.category;
+        var lastTutorial = fields.year;
+        var newRowContent =
+                    "<tr>" +
+                        "<td>" + name + "</td>" +
+                        "<td>" + category + "</td>" +
+                        "<td>" + lastTutorial + "</td>" +
+                    "</tr>";
+        $results_body.append(newRowContent);
+    }
+}
+
+function renderTopSearchedWords(wordsList){
+    var $results_body = $("#id-table-top-searched-words");
+    $results_body.empty();
+    for (var i = 0; i < wordsList.length; i++) {
+        var fields = wordsList[i];
+        var word = fields.word;
+        var count = fields.count;
+        var newRowContent =
+                    "<tr>" +
+                        "<td>#" + (parseInt(i+1).toString()) + "</td>" +
+                        "<td>" + word + "</td>" +
+                        "<td>" + count + "</td>" +
+                    "</tr>";
+        $results_body.append(newRowContent);
+    }
+}
+
+function renderSearchStats(total_words, total_searchs){
+    $("#id-total-search").text(total_searchs);
+    $("#id-total-searched-words").text(total_words);
 }

@@ -1,3 +1,5 @@
+whoosh==2.7.4
+django-haystack==2.8.1
 django==2.0.6
 pillow==5.1.0
 psycopg2==2.7.4

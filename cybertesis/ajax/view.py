@@ -4,6 +4,7 @@ from django.db import IntegrityError
 from django.http import HttpResponse
 import django
 from django.views.decorators.http import require_http_methods
+from haystack.query import SearchQuerySet
 
 from tesis.models import TesisRanking, Tesis
 from services.tesis import TesisServices
@@ -52,3 +53,20 @@ def add_rating(request):
             }
         return HttpResponse(status=code, content_type='application/json',
                             content=json.dumps(respond))
+
+
+@require_http_methods(['GET'])
+def search_autocomplete(request):
+    param = request.GET.get('q', '')
+    sqs = SearchQuerySet()
+    desc = sqs.filter(content_auto=param)
+    title = sqs.filter(tesis_title=param)
+    data = (desc | title)[0:5]
+    suggestions = []
+    for result in data:
+        suggestions.append({
+            'title': result.tesis_title,
+            'description': result.content_auto,
+            'tesis_id': result.pk
+        })
+    return HttpResponse(json.dumps(suggestions), content_type='application/json')

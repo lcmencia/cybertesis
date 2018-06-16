@@ -11,27 +11,14 @@
                 <th>Categoria</th>
                 <th>Ultima Tutoría</th>
                 </thead>
-                <tbody>
-                <tr>
-                    <td>Dra. Olga Gonzalez</td>
-                    <td>Ciencias Juridicas</td>
-                    <td>2017</td>
-                </tr>
-                <tr>
-                    <td>Ubaldo Evaristo Fernandez Krekeler</td>
-                    <td>Ingeniería Y Tecnología</td>
-                    <td>2017</td>
-                </tr>
-                <tr>
-                    <td>Francisco Lezcano</td>
-                    <td>Contabilidad Empresarial</td>
-                    <td>2015</td>
-                </tr>
-                <tr>
-                    <td>David Ayala</td>
-                    <td>Psicología</td>
-                    <td>2014</td>
-                </tr>
+                <tbody id="recommend-tutors-body">
+                    {% for tutor in recommended_tutors %}
+                        <tr>
+                            <td>{{ tutor.name }}</td>
+                            <td>{{ tutor.category }}</td>
+                            <td>{{ tutor.year }}</td>
+                        </tr>
+                    {% endfor %}
                 </tbody>
             </table>
         </div>

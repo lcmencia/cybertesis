@@ -8,6 +8,7 @@ class TesisServices:
     def __init__(self):
         self.LIMIT = 10
         self.top_categories = {}
+        self.top_tutors = []
 
     @classmethod
     def calculate_tesis_rating(cls, rating_list):
@@ -18,6 +19,23 @@ class TesisServices:
         total_vote = len(rating_list)
         return {'stars': 0 if total_vote == 0 else int(round(rating_total / total_vote)),
                 'total_vote': total_vote}
+
+    @classmethod
+    def generate_tutor_json_list(cls, tutors_name_list, tutors_obj, subcategy_obj):
+        tutors_full = []
+        for tesis_tutor in tutors_obj:
+            tesis_of_tutor = Tesis.objects.filter(tutor__id=tesis_tutor.id).order_by('-year')[:1].all()
+            year = tesis_of_tutor[0].year if tesis_of_tutor else ''
+            name = tesis_tutor.name
+            category = subcategy_obj.categories.all()[0].category_name
+            if name not in tutors_name_list:
+                tutors_name_list.append(name)
+                tutors_full.append({
+                    "name": name,
+                    "category": category,
+                    "year": year
+                })
+        return tutors_name_list, tutors_full
 
     def generate_tesis_resume(self):
         # Se obtiene la cantidad total de tesis
@@ -32,7 +50,8 @@ class TesisServices:
         # Se buscan las tesis que fueron rankeadas y total de votación
         for tesis in tesis_list.all():
             # total de votación para esa tesis
-            total_ranking = len(tesis.tesisranking_set.all())
+            all_ranking = tesis.tesisranking_set.all()
+            total_ranking = len(all_ranking) if all_ranking else 0
             # cada tesis puede tener más de una sub-categoría
             for s in tesis.sub_category.all():
                 # A cada sub-categoría se suma la cantidad de votación que tuvo la tesis
@@ -43,16 +62,23 @@ class TesisServices:
                               sorted(sub_category_values, key=sub_category_values.get, reverse=True)][:self.LIMIT]
         categories_list = []
         names_list = []
+        tutors_list = []
         # Se buscan las categorías asociadas a cada sub-categoría, y se agregan a la lista de ranking
         for sc in top_sub_categories:
             sub_categories = SubCategory.objects.filter(sub_category_name=list(sc.keys())[0])
             for subc in sub_categories.all():
+                for tesis in subc.tesis_set.all():
+                    names_list, tutors = TesisServices.generate_tutor_json_list(tutors_name_list=names_list,
+                                                                                tutors_obj=tesis.tutor.all(),
+                                                                                subcategy_obj=subc)
+                    tutors_list += tutors
                 for c in subc.categories.all():
                     if c.category_name not in names_list:
                         names_list.append(c.category_name)
                         categories_list.append({'category_name': c.category_name, 'id': c.id,
                                                 'category_icon': c.category_fa_icon})
         self.top_categories = categories_list
+        self.top_tutors = tutors_list
 
     @classmethod
     def get_tesis_rating(cls, tesis_id):
