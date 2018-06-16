@@ -4,7 +4,7 @@ import django
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from datetime import datetime
-
+from django.contrib.auth.models import User
 
 # Create your models here.
 
@@ -37,15 +37,11 @@ class Institution(models.Model):
 
 
 class PyDepartments(models.Model):
-    department_id = models.IntegerField(primary_key=True, db_column='department_id')
+    department_id = models.AutoField(primary_key=True, db_column='department_id')
     department_name = models.CharField(max_length=100, null=False, blank=False, db_column='department_name')
     department_capital = models.CharField(max_length=100, null=False, blank=False, db_column='department_capital')
     lat = models.FloatField(null=True, db_column='lat'),
     lon = models.FloatField(null=True, db_column='lon')
-
-    class Meta:
-        db_table = 'tesis_py_departments'
-        managed = False
 
 
 class Faculty(models.Model):
@@ -144,3 +140,8 @@ class SubCategory(models.Model):
 
     class Meta:
         db_table = 'tesis_sub_category'
+
+
+class DataEntry(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    institution = models.ForeignKey('Institution', on_delete=models.CASCADE)
