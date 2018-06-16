@@ -1,0 +1,249 @@
+.dropdown-toggle::after {
+    display: none;
+}
+
+.btn:hover {
+    box-shadow: none !important;
+    background-color: #80bdff !important;
+    color: white !important;
+}
+
+.btn:focus {
+    box-shadow: none !important;
+    background-color: #80bdff !important;
+}
+
+.close:hover {
+    box-shadow: none !important;
+    background-color: red !important;
+    color: white !important;
+}
+
+.close:focus {
+    box-shadow: none !important;
+    background-color: red !important;
+}
+
+/* Custome slider*/
+.slidecontainer {
+    width: 100%;
+}
+
+.slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 8px;
+    border-radius: 5px;
+    background: #c1f0cc;
+    outline: none;
+    opacity: 1;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+}
+
+.slider:hover {
+    opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: #28a745;
+    cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: #28a745;
+    cursor: pointer;
+}
+
+/* END custom slider*/
+/* Custom switch */
+.switch {
+    position: relative;
+    display: block;
+    width: 50px;
+    height: 24px;
+}
+
+.switch input {
+    display: none;
+}
+
+.cus-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+.cus-slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 4px;
+    bottom: 4px;
+    background-color: #c1f0cc;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+input:checked + .cus-slider {
+    background-color: #28a745;
+}
+
+input:focus + .cus-slider {
+    box-shadow: 0 0 1px #28a745;
+}
+
+input:checked + .cus-slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.cus-slider.cus-round {
+    border-radius: 34px;
+}
+
+.cus-slider.cus-round:before {
+    border-radius: 50%;
+}
+
+/* END custom switch */
+/* Custom label */
+.cus-label {
+    color: #6693ca;
+    font-size: 12px;
+}
+
+.chosen-container .chosen-drop,
+.chosen-container-multi .chosen-choices .search-field input[type="text"],
+.chosen-container-multi .chosen-choices {
+    border-color: #28a745;
+}
+
+.chosen-container .chosen-results li.highlighted {
+    background-color: #28a745;
+}
+
+.chosen-container-multi .chosen-choices .search-field input[type="text"] {
+    color: #84e19a;
+}
+
+/* END custom label*/
+#scrollable-dropdown-menu .tt-menu {
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+.tt-query, /* UPDATE: newer versions use tt-input instead of tt-query */
+.tt-hint {
+    width: 396px;
+    height: 30px;
+    padding: 8px 12px;
+    font-size: 24px;
+    line-height: 30px;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    outline: none;
+}
+
+.tt-query { /* UPDATE: newer versions use tt-input instead of tt-query */
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+
+.tt-hint {
+    color: #999;
+}
+
+.tt-menu { /* UPDATE: newer versions use tt-menu instead of tt-dropdown-menu */
+    width: 91%;
+    margin-top: 5px;
+    padding: 8px 0;
+    background-color: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 0.25rem;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, .2);
+}
+
+.tt-suggestion {
+    padding: 3px 3px;
+    font-size: 1.0em;
+    line-height: 0.9rem;
+}
+
+.tt-suggestion:hover {
+    cursor: pointer;
+    color: #fff;
+    background-color: #0097cf;
+}
+
+.tt-suggestion.tt-cursor {
+    color: #fff;
+    background-color: #0097cf;
+}
+
+p.tt-suggestion,
+.tt-suggestion p {
+    margin: 0;
+}
+
+.gist {
+    font-size: 14px;
+}
+
+.tt-suggestion.tt-is-under-cursor { /* UPDATE: newer versions use .tt-suggestion.tt-cursor */
+    color: #fff;
+    background-color: #0097cf;
+
+}
+
+#scrollable-dropdown-menu .empty-message {
+    padding: 5px 10px;
+    text-align: center;
+}
+
+#scrollable-dropdown-menu .tt-dropdown-menu {
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+/* Scrolling navbar shadown */
+#top-shadow {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 70px;
+    z-index: 999;
+    -moz-box-shadow: 0 8px 8px rgba(0, 0, 0, 0.23);
+    -webkit-box-shadow: 0 4px 7px rgba(0, 0, 0, 0.23), 0 8px 25px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 7px rgba(0, 0, 0, 0.23), 0 8px 25px rgba(0, 0, 0, 0.05);
+    display: none;
+}
+
+.tt-hint {
+    opacity: 0 !important;
+}
+
+#scrollable-dropdown-menu .tesis-suggestions {
+    margin: 2px;
+    color: orangered;
+    font-size: 18px;
+    padding: 3px 0;
+    border-bottom: 1px solid #ccc;
+}

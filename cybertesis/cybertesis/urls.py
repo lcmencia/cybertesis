@@ -30,6 +30,7 @@ urlpatterns = [
     path('search/', views.search, name='search'),
     path('tesis/<int:tesis_id>/', views.tesis, name='tesis'),
     url(r'^ajax/', include('ajax.urls')),
+    url(r'^search/', include('haystack.urls')),
 ]
 
 if settings.DEBUG:

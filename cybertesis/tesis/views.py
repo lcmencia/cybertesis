@@ -1,8 +1,10 @@
 from django.contrib import messages
 from django.core import serializers
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django.views.decorators.http import require_http_methods
+from whoosh.analysis import StopFilter, LanguageAnalyzer, StemFilter
+
 from services.searches import SearchesServices
 from services.tesis import TesisServices
 from services.resume import ResumeServices
@@ -17,7 +19,7 @@ from django.views.generic import RedirectView
 
 from .models import Full, Searches, Institution, Category
 from .constants import ORDER_BY_MOST_RECENT
-from .models import Searches, Category
+from .models import Searches, Category, Tesis, Person
 
 
 def authentication(request):
@@ -42,6 +44,9 @@ def index(request):
     tesis_services = TesisServices()
     tesis_services.generate_tesis_resume()
     tesis_top_categories = tesis_services.top_categories
+
+    # top tutores
+    recommended_tutors = tesis_services.top_tutors
 
     if len(data) > 0:
         category_selected = data.get('category_id', 0)
@@ -83,14 +88,21 @@ def index(request):
     top_words_searched = searches_services.top_words_searched
 
     context = {
-        'total_tesis': total_tesis, 'init_year': init_year,
-        'total_faculty': total_faculty, 'total_institution': total_institution,
-        'outside_capital_percentage': outside_capital_percentage, 'trending': trending,
-        'total_searchs': total_searchs, 'total_words': total_words,
+        'total_tesis': total_tesis,
+        'init_year': init_year,
+        'total_faculty': total_faculty,
+        'total_institution': total_institution,
+        'outside_capital_percentage': outside_capital_percentage,
+        'trending': trending,
+        'total_searchs': total_searchs,
+        'total_words': total_words,
         'top_words_searched': top_words_searched,
         'tesis_list': all_full,
         'tesis_top_categories': tesis_top_categories,
-        'category_name': category_name, 'category_selected': category_selected}
+        'category_name': category_name,
+        'category_selected': category_selected,
+        'recommended_tutors': recommended_tutors
+    }
     return render(request, "index.html", context)
 
 
@@ -102,6 +114,7 @@ def search(request):
     search = data.get('search_text', '').lower()
     tesis_services = TesisServices()
     total_full = list()
+    tutors_full = list()
     all_full = tesis_services.get_by_category(category_id, order)
 
     if len(search) > 0:
@@ -115,21 +128,63 @@ def search(request):
                 # Si la palabra existe se agrega en los resultados
                 if search in value:
                     total_full.append(full)
+                    full_tesis = Tesis.objects.get(pk=full.id)
+                    tutors_name_list = []
+                    for ft_sc in full_tesis.sub_category.all():
+                        # Teniendo las sub-categorías se puede llegar a los tutores de cada tesis
+                        for sc_tesis in ft_sc.tesis_set.all():
+                            tutors_name_list, tutors = TesisServices.generate_tutor_json_list(tutors_name_list=tutors_name_list,
+                                                                                                   tutors_obj=sc_tesis.tutor.all(),
+                                                                                                   subcategy_obj=ft_sc)
+                            tutors_full += tutors
                     break
 
         # Por cada busqueda, en la tabla de palabras buscadas, si la palabra existe se suma 1, sino se inserta con valor 1
-        obj, created = Searches.objects.update_or_create(word=search)
-        if not created:
-            obj.count += 1
+        # Si lo que se ingresa como búsqueda no es una sola pabla, sino una frace, se utiliza filtros tipo Stop y Stemming,
+        # luego se realiza la extracción de keywords o tokens
+        """
+        “Stop” words are words that are so common it’s often counter-productive to index them, such as “and”, 
+        “or”, “if”, etc. The provided analysis.StopFilter lets you filter out stop words, and includes a default 
+        list of common stop words.
+        Stemming is a heuristic process of removing suffixes (and sometimes prefixes) from words to arrive (hopefully, 
+        most of the time) at the base word.
+        """
+        if len(search.split()) > 1:
+            analyzer = LanguageAnalyzer("es")
+            a_filters = StopFilter() | StemFilter()
+            keywords = list(set([token.text for token in a_filters(analyzer(search, no_morph=True))]))
         else:
-            if obj.count is None:
-                obj.count = 1
-        obj.save()
+            keywords = [search]
+
+        for word in keywords:
+            obj, created = Searches.objects.update_or_create(word=word)
+            if not created:
+                obj.count += 1
+            else:
+                if obj.count is None:
+                    obj.count = 1
+            obj.save()
     else:
         total_full = all_full
 
-    the_data = serializers.serialize("json", [x for x in total_full])
-    return HttpResponse(the_data, content_type='application/json')
+    # Se actualiza las palabras más buscadas
+    # Se actualiza total de búsquedas y cantidad de palabras diferentes
+    searches_services = SearchesServices()
+    searches_services.generate_resume()
+    top_words_searched = searches_services.top_words_searched
+    # Total de palabras diferentes
+    total_words = searches_services.total_words
+    # Total de busquedas en el sitio
+    total_searchs = searches_services.total_searchs
+
+    the_data = {'tesis_list': serializers.serialize("json", [x for x in total_full]),
+                'tutors_list': tutors_full,
+                'top_words_searched': top_words_searched,
+                'total_words': total_words,
+                'total_searchs': total_searchs
+                }
+    # the_data = serializers.serialize("json", [x for x in total_full])
+    return JsonResponse(the_data)
 
 
 @require_http_methods(['GET'])
