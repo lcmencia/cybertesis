@@ -8,10 +8,32 @@ from whoosh.analysis import StopFilter, LanguageAnalyzer, StemFilter
 from services.searches import SearchesServices
 from services.tesis import TesisServices
 from services.resume import ResumeServices
+
+
+from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login, update_session_auth_hash
+from django.contrib.auth.decorators import login_required
+from django.views.generic import RedirectView
+
+from .models import Full, Searches, Institution, Category
 from .constants import ORDER_BY_MOST_RECENT
 from .models import Searches, Category, Tesis, Person
 
 
+def authentication(request):
+    username = request.POST.get('username')
+    password = request.POST.get('password')
+    user = authenticate(request, username=username, password=password)
+    if user is not None:
+        login(request, user)
+        return redirect('/')
+    else:
+        return render(request, 'login.html', {})
+
+
+@login_required()
 @require_http_methods(['GET'])
 def index(request):
     data = request.GET
