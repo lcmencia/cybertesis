@@ -84,27 +84,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'cybertesis.wsgi.application'
 
-# Database
-# https://docs.djangoproject.com/en/2.0/ref/settings/#databases
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#     }
-# }
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': 'cybertesis',
-#         'USER': 'postgres',
-#         'PASSWORD': '',
-#         'HOST': 'localhost',
-#         'PORT': '5432',
-#     }
-# }
-
 MESSAGE_TAGS = {
     messages.DEBUG: 'alert-info',
     messages.INFO: 'alert-info',
@@ -154,10 +133,7 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'mediafiles')
 
 LOGIN_URL = reverse_lazy('authentication')
-
 LOGOUT_URL = reverse_lazy('logout')
-
-project_home = u'/Users/lcmencia/PycharmProjects/cybertesis/cybertesis/cybertesis/settings.py'
 
 try:
     from tesis import local_settings
@@ -165,6 +141,9 @@ try:
     print("Local settings imported successfully.")
 except Exception as e:
     print("Exception importing Local Settings -> " + str(e))
+
+# Database
+# https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
 DATABASES = {
     'default': {

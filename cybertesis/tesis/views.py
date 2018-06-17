@@ -1,6 +1,6 @@
 from django.contrib import messages
 from django.core import serializers
-from django.http import HttpResponse, JsonResponse
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.views.decorators.http import require_http_methods
 from whoosh.analysis import StopFilter, LanguageAnalyzer, StemFilter
@@ -9,17 +9,10 @@ from services.searches import SearchesServices
 from services.tesis import TesisServices
 from services.resume import ResumeServices
 
+from django.contrib.auth import authenticate, login
 
-from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login, update_session_auth_hash
-from django.contrib.auth.decorators import login_required
-from django.views.generic import RedirectView
-
-from .models import Full, Searches, Institution, Category
 from .constants import ORDER_BY_MOST_RECENT
-from .models import Searches, Category, Tesis, Person
+from .models import Searches, Category, Tesis
 
 
 def authentication(request):
@@ -33,7 +26,7 @@ def authentication(request):
         return render(request, 'login.html', {})
 
 
-@login_required()
+# @login_required()
 @require_http_methods(['GET'])
 def index(request):
     data = request.GET
@@ -45,7 +38,7 @@ def index(request):
     tesis_services.generate_tesis_resume()
     tesis_top_categories = tesis_services.top_categories
 
-    # top tutores
+    # Top tutores
     recommended_tutors = tesis_services.top_tutors
 
     if len(data) > 0:
@@ -88,21 +81,24 @@ def index(request):
     top_words_searched = searches_services.top_words_searched
 
     context = {
-        'total_tesis': total_tesis,
-        'init_year': init_year,
-        'total_faculty': total_faculty,
-        'total_institution': total_institution,
-        'outside_capital_percentage': outside_capital_percentage,
-        'trending': trending,
-        'total_searchs': total_searchs,
-        'total_words': total_words,
+        # C1
+        'total_tesis': total_tesis, 'init_year': init_year,
+        # C2
+        'total_faculty': total_faculty, 'total_institution': total_institution,
+        # C3
+        'outside_capital_percentage': outside_capital_percentage, 'trending': trending,
+        # C4
+        'total_searchs': total_searchs, 'total_words': total_words,
+        # Tabla busquedas
         'top_words_searched': top_words_searched,
+        # Tabla tesis
         'tesis_list': all_full,
+        # Top categorias de la izquierda
         'tesis_top_categories': tesis_top_categories,
-        'category_name': category_name,
-        'category_selected': category_selected,
-        'recommended_tutors': recommended_tutors
-    }
+        # Filtro de categoria
+        'category_name': category_name, 'category_selected': category_selected,
+        # Tutores recomendados
+        'recommended_tutors': recommended_tutors}
     return render(request, "index.html", context)
 
 
@@ -140,7 +136,7 @@ def search(request):
                     break
 
         # Por cada busqueda, en la tabla de palabras buscadas, si la palabra existe se suma 1, sino se inserta con valor 1
-        # Si lo que se ingresa como búsqueda no es una sola pabla, sino una frace, se utiliza filtros tipo Stop y Stemming,
+        # Si lo que se ingresa como búsqueda no es una sola pabla, sino una frase, se utiliza filtros tipo Stop y Stemming,
         # luego se realiza la extracción de keywords o tokens
         """
         “Stop” words are words that are so common it’s often counter-productive to index them, such as “and”, 

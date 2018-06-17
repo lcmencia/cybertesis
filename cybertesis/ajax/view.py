@@ -6,7 +6,7 @@ import django
 from django.views.decorators.http import require_http_methods
 from haystack.query import SearchQuerySet
 
-from tesis.models import TesisRanking, Tesis
+from tesis.models import TesisRanking, Tesis, Full
 from services.tesis import TesisServices
 
 from tesis.constants import HTTP_RESPONSE_CODES
@@ -58,15 +58,20 @@ def add_rating(request):
 @require_http_methods(['GET'])
 def search_autocomplete(request):
     param = request.GET.get('q', '')
+    category_id = request.GET.get('category', '')
     sqs = SearchQuerySet()
     desc = sqs.filter(content_auto=param)
     title = sqs.filter(tesis_title=param)
     data = (desc | title)[0:5]
     suggestions = []
     for result in data:
-        suggestions.append({
-            'title': result.tesis_title,
-            'description': result.content_auto,
-            'tesis_id': result.pk
-        })
+        cats = list()
+        if category_id != '':
+            cats = result.cats_id.split("|")
+        if category_id == '' or category_id in cats:
+            suggestions.append({
+                'title': result.tesis_title,
+                'description': result.content_auto,
+                'tesis_id': result.pk
+            })
     return HttpResponse(json.dumps(suggestions), content_type='application/json')

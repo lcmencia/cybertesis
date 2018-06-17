@@ -6,7 +6,12 @@ $(document).ready(function () {
             url: searchAutocompleteUrl,
             wildcard: '%QUERY',
             prepare: function (query, settings) {
-                settings.url += '?q=' + $("#buscador_principal").val();
+                var category_id = getUrlParameter('category_id');
+                var category_param = "";
+                if (category_id != undefined){
+                    category_param = "&category=" + category_id;
+                }
+                settings.url += '?q=' + $("#buscador_principal").val() + category_param;
                 return settings;
             },
         }

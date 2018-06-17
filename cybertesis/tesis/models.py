@@ -6,6 +6,7 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from datetime import datetime
 from django.contrib.auth.models import User
 
+
 # Create your models here.
 
 
@@ -43,6 +44,10 @@ class PyDepartments(models.Model):
     lat = models.FloatField(null=True, db_column='lat'),
     lon = models.FloatField(null=True, db_column='lon')
 
+    class Meta:
+        db_table = 'tesis_py_departments'
+        managed = False
+
 
 class Faculty(models.Model):
     name = models.TextField(null=True)
@@ -51,7 +56,8 @@ class Faculty(models.Model):
     lon = models.FloatField(null=True)
     lat = models.FloatField(null=True)
     address = models.CharField(max_length=200, null=True)
-    department_id = models.ForeignKey('PyDepartments', on_delete=models.CASCADE)
+    department_id = models.ForeignKey('PyDepartments', on_delete=models.CASCADE, to_field='department_id', default=18,
+                                      db_column='department_id')
 
 
 class Career(models.Model):
@@ -102,6 +108,10 @@ class Full(models.Model):
     tutors = models.TextField()
     added_date = models.DateTimeField()
     rating = models.IntegerField()
+    cats_id = models.TextField()
+    cats_name = models.TextField()
+    subs_id = models.TextField()
+    subs_name = models.TextField()
 
     class Meta:
         managed = False
