@@ -174,7 +174,7 @@ def index(request):
 
     # Todas las tesis a mostrarse, ordenado de mas reciente a menos
     if question:
-        all_full = tesis_services.get_by_category(0, ORDER_BY_MOST_RECENT)
+        all_full = tesis_services.get_by_category(category_selected, ORDER_BY_MOST_RECENT)
         all_full, recommended_tutors = TesisServices.search_in_tesis(question, all_full)
     else:
         all_full = tesis_services.get_by_category(category_selected, ORDER_BY_MOST_RECENT)
