@@ -55,10 +55,14 @@ function ajax_search_text(search_text, order){
         type: 'GET',
         data: data,
         success: function(data){
-            renderResultadosTesis($.parseJSON(data.tesis_list));
+            renderResultadosTesis(data.tesis_list);
             renderResultadosTutors(data.tutors_list);
             renderTopSearchedWords(data.top_words_searched);
             renderSearchStats(data.total_words, data.total_searchs);
+            // Se agrega en el input el texto que buscó
+            if(data.question){
+                $("#buscador_principal").val(data.question);
+            }
         },
         error: function(jqXHR, textStatus, errorThrown){
             console.log(jqXHR);
@@ -84,27 +88,7 @@ var getUrlParameter = function getUrlParameter(sParam) {
 };
 
 function renderResultadosTesis(data){
-    // Genera la tabla de lista de tesis con los datos recibidos
-    console.log("DATA: " + data);
-    var $results_body = $("#results_body");
-    $results_body.empty();
-    for(var i = 0; i < data.length; i++){
-        var fields = data[i].fields
-        var title = fields.title;
-        var year = fields.year;
-        var career = fields.career_name;
-        var faculty = fields.faculty_name;
-        var institution = fields.institution_name;
-        var id = data[i].pk;
-        var rating = fields.rating;
-        var newRowContent = "<tr><td><a href='/tesis/"+id+"/' target='_blank'>"+
-                            "<span class='fa fa-external-link tesis-access-link'></span></a></td>"+
-                            "<td style='text-overflow: ellipsis;'>"+title+"</td><td>"+career+"</td><td>"+
-                            faculty+"</td><td>"+institution+"<td style='text-align: center;'>"+rating+
-                            "<i class='rating-stars filled-stars fa fa-star'></i></td>"+
-                            "</td><td class='text-primary'>"+year+"</td></tr>";
-        $results_body.append(newRowContent);
-    }
+    $("#id-tesis-result-container").html(data);
 }
 
 function renderResultadosTutors(data){

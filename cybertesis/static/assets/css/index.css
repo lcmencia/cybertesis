@@ -1,17 +1,17 @@
-div.copyright{
+div.copyright {
     margin-left: auto !important;
     margin-right: 20px !important;
 }
 
-div.footer-images img{
+div.footer-images img {
     width: 100% !important;
 }
 
-div.tesis-description-container{
+div.tesis-description-container {
     margin-top: 10px;
 }
 
-p.tesis-description{
+p.tesis-description {
     height: 100%;
     line-height: 1.6em;
     text-indent: 2em;
@@ -19,7 +19,51 @@ p.tesis-description{
     padding: 0 40px 0 40px;
 }
 
-span.tesis-access-link{
+span.tesis-access-link {
     font-size: 20px;
     color: #6c757d;
 }
+
+/* Paginado */
+.pagination li {
+    color: black;
+    float: left;
+    padding: 8px 16px;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color .3s;
+    border: 1px solid #ddd;
+    font-size: 16px;
+}
+
+.wrapper-pagination {
+    text-align: center;
+}
+
+.wrapper-pagination ul {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+    /* For IE, the outcast */
+    zoom: 1;
+    *display: inline;
+}
+
+.wrapper-pagination li {
+    float: left;
+}
+
+.wrapper-pagination li.disabled {
+    color: darkgray;
+}
+
+.pagination li.active {
+    background-color: #ab47bc;
+    color: white;
+}
+
+.pagination li:hover:not(.active) {
+    background-color: #ddd;
+}
+
+/* Fin paginado*/
