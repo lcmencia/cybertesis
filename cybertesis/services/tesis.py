@@ -156,6 +156,7 @@ class TesisServices:
     def search_in_tesis(cls, search_text, all_full):
         total_full = list()
         tutors_full = list()
+        tutors_name_list = []
         for full in all_full:
             # Por cada tesis se iteran sus columnas para ver si la palabra existe
             # Esto puede ser demasiado costoso, por eso la vista de donde se obtienen las tesis
@@ -167,7 +168,6 @@ class TesisServices:
                 if search_text in value:
                     total_full.append(full)
                     full_tesis = Tesis.objects.get(pk=full.id)
-                    tutors_name_list = []
                     for ft_sc in full_tesis.sub_category.all():
                         # Teniendo las sub-categorías se puede llegar a los tutores de cada tesis
                         for sc_tesis in ft_sc.tesis_set.all():
