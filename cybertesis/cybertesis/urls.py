@@ -32,6 +32,7 @@ urlpatterns = [
     url(r'^ajax/', include('ajax.urls')),
     url(r'^search/', include('haystack.urls')),
     path('dashboard/', views.dashboard, name='dashboard'),
+    path('add_tesis/', views.add_tesis, name='add_tesis'),
 ]
 
 if settings.DEBUG:

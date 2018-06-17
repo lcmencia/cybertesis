@@ -35,22 +35,26 @@ def dashboard(request):
 
     institution_id = request.user.dataentry.institution.id
     full_list = Full.objects.filter(institution_id=institution_id)
-    #tesis_list = serializers.serialize("json", [x for x in full_list])
-
-    # faculty_list = Faculty.objects.filter(institution__id=institution_id)
-    # faculty_id_list = list()
-    # for faculty in faculty_list:
-    #     faculty_id_list.append(faculty.id)
-    #
-    # career_list = Career.objects.filter(faculty_id__in=faculty_id_list)
-    # career_id_list = list()
-    # for career in career_list:
-    #     career_id_list.append(career.id)
-    #
-    # request.session['faculty_list'] = serializers.serialize("json", [y for y in faculty_list])
-    # request.session['career_list'] = serializers.serialize("json", [x for x in career_list])
 
     return render(request, 'dashboard.html', {'tesis_list': full_list})
+
+
+@login_required()
+@require_http_methods(['GET', 'POST'])
+def add_tesis(request):
+    if not request.user.is_authenticated or request.user.dataentry.institution == None:
+        return redirect('/login')
+
+    method = request.method
+    institution_id = request.user.dataentry.institution.id
+    if method == 'GET':
+
+        return render(request, 'add_tesis.html', {})
+    elif method == 'POST':
+        data = request.POST
+        title = data.get('title', '')
+
+        print("A")
 
 
 @require_http_methods(['GET'])

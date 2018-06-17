@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+{% load static custom_filters %}
+
+{% block styles %}
+    {% include 'utils/base_styles.html' %}
+    <!-- Estilos de la página principal -->
+    <link href="{% static 'assets/css/index.css' %}" type="text/css" rel="stylesheet"/>
+    <!-- end -->
+{% endblock styles %}
+{% block top_scripts %}
+    <script>
+        var csrf = '{{ csrf_token }}'
+    </script>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.js"></script>
+{% endblock top_scripts %}
+
+{% block left_categories_ranking %}
+    <!-- Side bar: menu dataentry -->
+    {% include 'sections/dataentry-left-panel.html' %}
+    <!-- End menu dataentry -->
+{% endblock left_categories_ranking %}
+
+{% block init_body %}
+{% endblock init_body %}
+
+{% block messages %}
+    {% include 'utils/messages.html' %}
+    <div id = "alert_placeholder"></div>
+{% endblock messages %}
+
+{% block content %}
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header card-header-primary">
+                            <h4 class="card-title">Agregar Nueva Tesis</h4>
+                        </div>
+                        <div class="card-body">
+                            <form action="" method="post">
+                                {% csrf_token %}
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label class="bmd-label-floating">Titulo</label>
+                                            <input type="text" class="form-control" name="title"
+                                                   value="{{ tesis.title|default:'' }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label class="bmd-label-floating">Facultad</label>
+                                            <input type="text" class="form-control"
+                                                   value="{{ tesis.faculty_name|default:'' }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <div class="form-group">
+                                            <label class="bmd-label-floating">Carrera</label>
+                                            <input type="text" class="form-control" value="{{ tesis.career_name|default:'' }}">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="bmd-label-floating">Año</label>
+                                            <input type="text" class="form-control" value="{{ tesis.year|default:'' }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="bmd-label-floating">Tutor 1</label>
+                                            <input type="text" class="form-control"
+                                                   value="{{ tesis.tutor1|default:'' }}">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="bmd-label-floating">Tutor 2</label>
+                                            <input type="text" class="form-control"
+                                                   value="{{ tesis.tutor2|default:'' }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label class="bmd-label-floating">Autores (separados por comas)</label>
+                                            <input type="text" class="form-control"
+                                                   value="{{ tesis.authors|default:'' }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label class="bmd-label-floating">Resumen</label>
+                                            <textarea class="form-control" rows="5"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-9">
+                                        <div class="form-group">
+                                            <label class="bmd-label-floating">Link</label>
+                                            <input type="text" class="form-control"
+                                                   value="{{ tesis.url|default:'' }}">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="bmd-label-floating">Formato</label>
+                                            <input type="text" class="form-control"
+                                                   value="{{ tesis.format|default:'' }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="clearfix"></div>
+                                <button type="submit" class="btn btn-primary btn-block col-md-2">Guardar</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card card-profile">
+                        {% if request.user.dataentry.institution.logo %}
+                            <div class="card-avatar">
+                                <a href="#">
+                                    <img class="img" src="/media/{{ request.user.dataentry.institution.logo }}"/>
+                                </a>
+                            </div>
+                        {% endif %}
+                        <div class="card-body">
+                            <h4 class="card-title">{{ request.user.dataentry.institution.name }}</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block footer %}
+    {% include 'sections/footer.html' %}
+{% endblock footer %}
+
+{% block bottom_js %}
+    {% include 'utils/base_js.html' %}
+{% endblock bottom_js %}
