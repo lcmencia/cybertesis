@@ -40,6 +40,9 @@
             <span class="navbar-toggler-icon icon-bar"></span>
         </button>
         <div class="collapse navbar-collapse justify-content-end" id="navigation">
+            <div class="navbar-wrapper col-md-2">
+                <a class="navbar-brand" href="{% url 'index' %}"><i class="fa fa-graduation-cap"></i> Cybertesis</a>
+            </div>
             <form class="navbar-form col-md-10" action="/search/" method="get" onsubmit="return false;">
                 <div id="scrollable-dropdown-menu" class="input-group no-border">
                     <input id="buscador_principal" type="text" value="" class="form-control typeahead"
@@ -52,9 +55,6 @@
                     </button>
                 </div>
             </form>
-        </div>
-        <div class="navbar-wrapper col-md-2">
-            <a class="navbar-brand" href="{% url 'index' %}"><i class="fa fa-graduation-cap"></i> Cybertesis</a>
         </div>
     </nav>
 {% endblock nav_bar %}

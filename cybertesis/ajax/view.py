@@ -30,6 +30,11 @@ def add_rating(request):
             'error_message': 'La dirección de correo ingresada no es válida.',
         }
         return HttpResponse(json.dumps(respond), content_type='application/json')
+    if value == '' or value == '0':
+        respond = {
+            'error_message': 'Debe valorar seleccionando de 1 a 5 estrellas.',
+        }
+        return HttpResponse(json.dumps(respond), content_type='application/json')
 
     try:
         tesis_by_id = Tesis.objects.get(id=tesis_id)
