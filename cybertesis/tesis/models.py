@@ -10,6 +10,8 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
+from tesis import constants
+
 
 class DocumentType(models.Model):
     name = models.CharField(max_length=20)
@@ -91,12 +93,6 @@ class Career(models.Model):
 
 
 class Tesis(models.Model):
-    TYPE_CHOICES = (
-        ('T', 'Tesis'),
-        ('TD', 'Tesis Doctoral'),
-        ('MS', 'Maestría'),
-        ('TM', 'Tesis Maestría')
-    )
     title = models.CharField(max_length=200)
     description = models.TextField(null=True)
     career = models.ForeignKey('Career', on_delete=models.CASCADE)
@@ -107,7 +103,7 @@ class Tesis(models.Model):
             MinValueValidator(1900),
             MaxValueValidator(datetime.now().year)],
         help_text="Usar este formato de fecha: <YYYY>")
-    tesis_type = models.CharField(max_length=3, choices=TYPE_CHOICES, default='T')
+    tesis_type = models.CharField(max_length=3, choices=constants.TYPE_CHOICES, default='T')
     added_date = models.DateTimeField(default=django.utils.timezone.now)
     sub_category = models.ManyToManyField('SubCategory', db_column='sub_category')
     tutor = models.ManyToManyField(Person, related_name='tutor')
@@ -165,7 +161,7 @@ class TesisRanking(models.Model):
 class Category(models.Model):
     category_name = models.CharField(verbose_name='Nombre', max_length=100, db_column='category_name', unique=True)
     category_fa_icon = models.CharField(verbose_name='Icono Material o FA', max_length=100,
-                                        default='<i class="material-icons">bubble_chart</i>',
+                                        default='<i class="fa fa-book-open"></i>',
                                         db_column='category_fa_icon', null=True)
 
     class Meta:
@@ -196,7 +192,7 @@ class SubCategory(models.Model):
 
 class DataEntry(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    institution = models.ForeignKey('Institution', on_delete=models.CASCADE, null=True)
+    institution = models.ForeignKey('Institution', on_delete=models.CASCADE, null=True, verbose_name='Universidad')
 
     def __str__(self):
         return self.user.username

@@ -22,7 +22,7 @@ def add_rating(request):
 
     if not user_name or len(user_name) < 3:
         respond = {
-            'error_message': 'EL nombre ingresado de tener 3 o más caracteres.',
+            'error_message': 'El nombre ingresado de tener 3 o más caracteres.',
         }
         return HttpResponse(json.dumps(respond), content_type='application/json')
     if not user_email or len(user_email) < 3 or '@' not in user_email:

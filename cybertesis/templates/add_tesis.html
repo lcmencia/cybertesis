@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+{% load static custom_filters %}
+
+{% block styles %}
+    {% include 'utils/base_styles.html' %}
+    <!-- Estilos de la página principal -->
+    <link href="{% static 'assets/css/index.css' %}" type="text/css" rel="stylesheet"/>
+    <!-- end -->
+{% endblock styles %}
+{% block top_scripts %}
+    <script>
+        var facultyList = JSON.parse('{{ faculty_list|safe }}');
+        var careerList = JSON.parse('{{ career_list|safe }}');
+        var subcategoryList = JSON.parse('{{ subcategory_list|safe }}');
+    </script>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.js"></script>
+{% endblock top_scripts %}
+
+{% block left_categories_ranking %}
+    <!-- Side bar: menu dataentry -->
+    {% include 'sections/dataentry-left-panel.html' %}
+    <!-- End menu dataentry -->
+{% endblock left_categories_ranking %}
+
+{% block init_body %}
+{% endblock init_body %}
+
+{% block messages %}
+    {% include 'utils/messages.html' %}
+    <div id = "alert_placeholder"></div>
+{% endblock messages %}
+
+{% block nav_bar %}
+    {% include 'sections/dataentry_nav_bar.html' %}
+{% endblock nav_bar %}
+
+{% block content %}
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header card-header-primary">
+                            <h4 class="card-title">Agregar Nueva Tesis</h4>
+                        </div>
+                        <div class="card-body">
+                            <form action="" method="post">
+                                {% csrf_token %}
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label class="bmd-label-floating">Titulo</label>
+                                            <input autocomplete="off" type="text" class="form-control" name="title"
+                                                   value="{{ title|default:'' }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <div class="form-group">
+                                            <label class="bmd-label-floating">Facultad</label>
+                                            <select id="faculty_select" class="form-control" name="faculty"></select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="bmd-label-floating">Tipo</label>
+                                            <select id="type_select" class="form-control" name="type">
+                                                {% for item in types %}
+                                                    <option value="{{ item.0 }}" {% if type == item.0 %} selected {% endif %}>{{ item.1|default:'' }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label class="bmd-label-floating">Carrera</label>
+                                            <select id="career_select" class="form-control" name="career"></select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label class="bmd-label-floating">Subcategorias</label>
+                                            <select style="height: 62pt" multiple="multiple" id="subcategory_select" class="form-control" name="subcategory"></select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="bmd-label-floating">Tutor 1</label>
+                                            <input autocomplete="off" type="text" class="form-control" name="tutor1"
+                                                   value="{{ tutor1|default:'' }}">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="bmd-label-floating">Tutor 2</label>
+                                            <input autocomplete="off" type="text" class="form-control" name="tutor2"
+                                                   value="{{ tutor2|default:'' }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-10">
+                                        <div class="form-group">
+                                            <label class="bmd-label-floating">Autores (separados por comas)</label>
+                                            <input autocomplete="off" type="text" class="form-control" name="authors"
+                                                   value="{{ authors|default:'' }}">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label class="bmd-label-floating">Año</label>
+                                            <input autocomplete="off" name="year" type="text" class="form-control" value="{{ year|default:'' }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label class="bmd-label-floating">Resumen</label>
+                                            <textarea autocomplete="off" name="resume" class="form-control" rows="5">{{ resume|default:'' }}</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-9">
+                                        <div class="form-group">
+                                            <label class="bmd-label-floating">Link</label>
+                                            <input autocomplete="off" type="text" class="form-control" name="link"
+                                                   value="{{ link|default:'' }}">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="bmd-label-floating">Formato</label>
+                                            <input autocomplete="off" type="text" class="form-control" name="format"
+                                                   value="{{ format|default:'' }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="clearfix"></div>
+                                <button type="submit" class="btn btn-primary btn-block col-md-2">Guardar</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card card-profile">
+                        {% if request.user.dataentry.institution.logo %}
+                            <div class="card-avatar">
+                                <a href="#">
+                                    <img class="img" src="/media/{{ request.user.dataentry.institution.logo }}"/>
+                                </a>
+                            </div>
+                        {% endif %}
+                        <div class="card-body">
+                            <h4 class="card-title">{{ request.user.dataentry.institution.name }}</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block footer %}
+    {% include 'sections/footer.html' %}
+{% endblock footer %}
+
+{% block bottom_js %}
+    {% include 'utils/base_js.html' %}
+    <script src="{% static 'assets/js/cybertesis/selects.js' %}"></script>
+{% endblock bottom_js %}

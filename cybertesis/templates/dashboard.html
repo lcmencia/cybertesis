@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block styles %}
+    {% include 'utils/base_styles.html' %}
+
+    <!-- Estilos de la página principal -->
+    <link href="{% static 'assets/css/index.css' %}" type="text/css" rel="stylesheet"/>
+    <!-- end -->
+
+{% endblock styles %}
+
+{% block top_scripts %}
+    {% include 'utils/base_top_js.html' %}
+{% endblock top_scripts %}
+
+{% block left_categories_ranking %}
+    <!-- Side bar: menu dataentry -->
+    {% include 'sections/dataentry-left-panel.html' %}
+    <!-- End menu dataentry -->
+{% endblock left_categories_ranking %}
+
+{% block nav_bar %}
+    {% include 'sections/dataentry_nav_bar.html' %}
+{% endblock nav_bar %}
+
+{% block content %}
+
+    <!-- Central published Tesis -->
+    {% include 'sections/dataentry_published_tesis.html' %}
+    <!-- End Central published Tesis-->
+
+    <a href="/add_tesis"><button class="btn btn-primary btn-block col-md-2">Agregar Tesis</button></a>
+{% endblock content %}
+
+{% block footer %}
+    {% include 'sections/footer.html' %}
+{% endblock footer %}
+
+
+{% block bottom_js %}
+
+    {% include 'utils/base_js.html' %}
+
+{% endblock bottom_js %}

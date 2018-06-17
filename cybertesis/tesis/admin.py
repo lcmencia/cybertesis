@@ -17,22 +17,49 @@ class AdminInstitution(admin.ModelAdmin):
 
 
 class AdminCategory(admin.ModelAdmin):
-    list_display = ('id', 'category_name')
+    list_display = ('id', 'category_name', 'category_fa_icon')
 
 
 class AdminSubCategory(admin.ModelAdmin):
-    list_display = ('id', 'sub_category_name')
+    list_display = ('id', 'sub_category_name', 'sub_category_fa_icon', 'get_category')
+
+    def get_category(self, instance):
+        cats = ''
+        categories_list = instance.categories.all()
+        for cat in categories_list:
+            cats += '' + cat.category_name + ', '
+        if cats[-2:] == ', ':
+            cats = cats[:-2]
+
+        return cats
+
+    get_category.short_description = 'Categorías'
 
 
 class AdminCareer(admin.ModelAdmin):
-    list_display = ('id', 'name')
+    list_display = ('id', 'name', 'get_faculty', 'get_institution')
+
+    def get_faculty(self, instance):
+        return instance.faculty
+
+    get_faculty.short_description = 'Facultad'
+
+    def get_institution(self, instance):
+        return instance.faculty.institution
+
+    get_institution.short_description = 'Universidad'
 
 
 class AdminFaculty(admin.ModelAdmin):
-    list_display = ('id', 'name')
+    list_display = ('id', 'name', 'get_institution')
+
+    def get_institution(self, instance):
+        return instance.institution
+
+    get_institution.short_description = 'Universidad'
 
 
-#admin.site.register(Tesis, AdminTesis)
+# admin.site.register(Tesis, AdminTesis)
 admin.site.register(Institution, AdminInstitution)
 admin.site.register(Category, AdminCategory)
 admin.site.register(SubCategory, AdminSubCategory)

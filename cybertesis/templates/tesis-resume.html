@@ -25,9 +25,9 @@
 {% endblock top_scripts %}
 
 {% block left_categories_ranking %}
-    <!-- Side bar: ranking de categorías -->
+    <!-- Side bar: opciones de tesis -->
     {% include 'sections/tesis-resume-left-panel.html' %}
-    <!-- End ranking de categorías -->
+    <!-- End opciones de tesis -->
 {% endblock left_categories_ranking %}
 
 {% block init_body %}
@@ -120,7 +120,7 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="form-group">
-                                            <label>Resumen-Abstract</label>
+                                            <label>Resumen</label>
                                             <div class="form-group tesis-description-container">
                                                 <p class="form-control tesis-description">{{ tesis.description|default:"" }}</p>
                                             </div>

@@ -1,0 +1,64 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header card-header-primary">
+                <div class="nav-tabs-navigation">
+                    <div class="nav-tabs-wrapper">
+                        <h4 class="card-title ">Tesis publicadas</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead class=" text-primary">
+                        <th>
+                        </th>
+                        <th>
+                            Titulo
+                        </th>
+                        <th>
+                            Carrera
+                        </th>
+                        <th>
+                            Facultad
+                        </th>
+                        <th>
+                            Año
+                        </th>
+                        </thead>
+                        <tbody id="results_body">
+                        {% if tesis_list %}
+                            {% for item in tesis_list %}
+                            <tr>
+                                <td>
+                                    <a href="{% url 'tesis' item.id %}" target="_blank">
+                                    <span class="fa fa-external-link tesis-access-link"></span>
+                                    </a>
+                                </td>
+                                <td style="text-overflow: ellipsis;">
+                                    {{ item.title }}
+                                </td>
+                                <td>
+                                    {{ item.career_name }}
+                                </td>
+                                <td>
+                                    {{ item.faculty_name }}
+                                </td>
+                                <td class="text-primary">
+                                    {{ item.year }}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="6">Sin resultados</td>
+                            </tr>
+                        {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
