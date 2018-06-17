@@ -3,7 +3,6 @@ import json
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
-from django.core import serializers
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
@@ -80,18 +79,18 @@ def add_tesis(request):
 
     elif method == 'POST':
         data = request.POST
-        title = data.get('title', '')
-        faculty = data.get('faculty', '')
-        career = data.get('career', '')
-        year = data.get('year', '')
+        title = data.get('title', '').strip()
+        faculty = data.get('faculty', '').strip()
+        career = data.get('career', '').strip()
+        year = data.get('year', '').strip()
         subcategories = data.getlist('subcategory')
-        resume = data.get('resume', '')
-        link = data.get('link', '')
-        format = data.get('format', '')
-        authors = data.get('authors', '')
-        tutor1 = data.get('tutor1', '')
-        tutor2 = data.get('tutor2', '')
-        type = data.get('type', '')
+        resume = data.get('resume', '').strip()
+        link = data.get('link', '').strip()
+        format = data.get('format', '').strip()
+        authors = data.get('authors', '').strip()
+        tutor1 = data.get('tutor1', '').strip()
+        tutor2 = data.get('tutor2', '').strip()
+        type = data.get('type', '').strip()
         messages = list()
         if title is None or len(title) == 0:
             messages.append({'tags': 'alert-danger', 'text': 'Ingrese el título'})
@@ -330,15 +329,15 @@ def edit(request, tesis_id=None):
         tesis_data = TesisServices.get_by_id(tesis_id)
 
         year = tesis_data['year']
-        title = tesis_data['title']
-        tutor1 = tesis_data['tutor1']
-        tutor2 = tesis_data['tutor2']
-        link = tesis_data['url']
-        format = tesis_data['format']
-        authors = tesis_data['authors']
-        resume = tesis_data['description']
+        title = tesis_data['title'].strip()
+        tutor1 = tesis_data['tutor1'].strip()
+        tutor2 = tesis_data['tutor2'].strip()
+        link = tesis_data['url'].strip()
+        format = tesis_data['format'].strip()
+        authors = tesis_data['authors'].strip()
+        resume = tesis_data['description'].strip()
         subcategories = tesis_data['subcategories']
-        type = tesis_data['type']
+        type = tesis_data['type'].strip()
         faculty_id = tesis_data['faculty_id']
         career_id = tesis_data['career_id']
 
@@ -375,18 +374,18 @@ def edit(request, tesis_id=None):
                            'resume': resume, 'tutor1': tutor1, 'tutor2': tutor2, 'type': type})
         elif method == 'POST':
             data = request.POST
-            title = data.get('title', '')
-            faculty = data.get('faculty', '')
-            career = data.get('career', '')
-            year = data.get('year', '')
+            title = data.get('title', '').strip()
+            faculty = data.get('faculty', '').strip()
+            career = data.get('career', '').strip()
+            year = data.get('year', '').strip()
             subcategories = data.getlist('subcategory')
-            resume = data.get('resume', '')
-            link = data.get('link', '')
-            format = data.get('format', '')
-            authors = data.get('authors', '')
-            tutor1 = data.get('tutor1', '')
-            tutor2 = data.get('tutor2', '')
-            type = data.get('type', '')
+            resume = data.get('resume', '').strip()
+            link = data.get('link', '').strip()
+            format = data.get('format', '').strip()
+            authors = data.get('authors', '').strip()
+            tutor1 = data.get('tutor1', '').strip()
+            tutor2 = data.get('tutor2', '').strip()
+            type = data.get('type', '').strip()
             messages = list()
             if title is None or len(title) == 0:
                 messages.append({'tags': 'alert-danger', 'text': 'Ingrese el título'})
@@ -431,10 +430,14 @@ def edit(request, tesis_id=None):
                     new_tesis.sub_category.add(SubCategory.objects.get(pk=s))
 
                 messages.append({'tags': 'alert-success', 'text': 'Tesis actualizada'})
-                return render(request, 'add_tesis.html',
-                              {'faculty_list': json.dumps(faculty_list_parsed),
-                               'career_list': json.dumps(career_list_parsed), 'messages': messages,
-                               'subcategory_list': json.dumps(subcategory_list_parsed),
-                               'types': constants.TYPE_CHOICES})
+                return redirect('edit', tesis_id=tesis_id)
+
+            return render(request, 'add_tesis.html',
+                          {'faculty_list': json.dumps(faculty_list_parsed),
+                           'career_list': json.dumps(career_list_parsed),
+                           'subcategory_list': json.dumps(subcategory_list_parsed), 'types': constants.TYPE_CHOICES,
+                           'messages': messages, 'format': format, 'title': title, 'faculty': faculty, 'career': career,
+                           'year': year, 'authors': authors, 'link': link, 'subcategories': json.dumps(subcategories),
+                           'resume': resume, 'tutor1': tutor1, 'tutor2': tutor2, 'type': type})
     else:
         return redirect('/dashboard')
