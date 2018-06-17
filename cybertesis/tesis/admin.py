@@ -5,7 +5,7 @@ from .models import *
 
 # Register your models here.
 
-admin.site.site_header = 'Portal de Administracion'
+admin.site.site_header = 'Portal de Administración'
 
 
 class AdminTesis(admin.ModelAdmin):
@@ -16,8 +16,28 @@ class AdminInstitution(admin.ModelAdmin):
     list_display = ('id', 'name')
 
 
-admin.site.register(Tesis, AdminTesis)
+class AdminCategory(admin.ModelAdmin):
+    list_display = ('id', 'category_name')
+
+
+class AdminSubCategory(admin.ModelAdmin):
+    list_display = ('id', 'sub_category_name')
+
+
+class AdminCareer(admin.ModelAdmin):
+    list_display = ('id', 'name')
+
+
+class AdminFaculty(admin.ModelAdmin):
+    list_display = ('id', 'name')
+
+
+#admin.site.register(Tesis, AdminTesis)
 admin.site.register(Institution, AdminInstitution)
+admin.site.register(Category, AdminCategory)
+admin.site.register(SubCategory, AdminSubCategory)
+admin.site.register(Career, AdminCareer)
+admin.site.register(Faculty, AdminFaculty)
 
 
 class ProfileInline(admin.StackedInline):

@@ -1,0 +1,24 @@
+-- DEPARTAMENTOS
+INSERT INTO tesis_py_departments (department_name, department_capital, lat, lon) VALUES ('Concepción', 'Concepción',-23,-57);
+INSERT INTO tesis_py_departments (department_name, department_capital, lat, lon) VALUES ('San Pedro', 'San Pedro de Ycuamandiyú',-24.1,-57.083333);
+INSERT INTO tesis_py_departments (department_name, department_capital, lat, lon) VALUES ('Cordillera', 'Caacupé',-25.383333,-57.133333);
+INSERT INTO tesis_py_departments (department_name, department_capital, lat, lon) VALUES ('Guairá', 'Villarrica',-25.75,-56.433333);
+INSERT INTO tesis_py_departments (department_name, department_capital, lat, lon) VALUES ('Caaguazú', 'Coronel Oviedo',-25.416667,-56.45);
+INSERT INTO tesis_py_departments (department_name, department_capital, lat, lon) VALUES ('Caazapá', 'Caazapá',-26.2,-56.383333);
+INSERT INTO tesis_py_departments (department_name, department_capital, lat, lon) VALUES ('Itapúa', 'Encarnación',-27.333333,-55.883333);
+INSERT INTO tesis_py_departments (department_name, department_capital, lat, lon) VALUES ('Misiones', 'San Juan Bautista',-26.633333,-57.166667);
+INSERT INTO tesis_py_departments (department_name, department_capital, lat, lon) VALUES ('Paraguarí', 'Paraguarí',-25.633333,-57.1);
+INSERT INTO tesis_py_departments (department_name, department_capital, lat, lon) VALUES ('Alto Paraná', 'Ciudad del Este',-25.416667,-54.633333);
+INSERT INTO tesis_py_departments (department_name, department_capital, lat, lon) VALUES ('Central', 'Areguá',-25.3,-57.416667);
+INSERT INTO tesis_py_departments (department_name, department_capital, lat, lon) VALUES ('Ñeembucú', 'Pilar',-26.866667,-58.3);
+INSERT INTO tesis_py_departments (department_name, department_capital, lat, lon) VALUES ('Amambay', 'Pedro Juan Caballero',-22.53,-55.75);
+INSERT INTO tesis_py_departments (department_name, department_capital, lat, lon) VALUES ('Canindeyú', 'Salto del Guairá',-24.016667,-54.33333);
+INSERT INTO tesis_py_departments (department_name, department_capital, lat, lon) VALUES ('Presidente Hayes', 'Villa Hayes',-23.775292,-58.612061);
+INSERT INTO tesis_py_departments (department_name, department_capital, lat, lon) VALUES ('Alto Paraguay',	'Fuerte Olimpo',-20.5,-59.0);
+INSERT INTO tesis_py_departments (department_name, department_capital, lat, lon) VALUES ('Boquerón','Filadelfia',-21.516667,-60.7);
+INSERT INTO tesis_py_departments (department_name, department_capital, lat, lon) VALUES ('Asunción', '',-25.3,-57.633333);
+
+--Icono de Categorias
+--URLS: https://material.io/tools/icons/?style=baseline y https://fontawesome.com/icons?d=gallery
+--Ejemplo Material: <i class="material-icons">bubble_chart</i>
+--Ejemplo FA: <i class="fa fa-microchip"></i>

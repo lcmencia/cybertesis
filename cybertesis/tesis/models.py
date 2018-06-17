@@ -32,10 +32,10 @@ class Institution(models.Model):
     TYPE_CHOICES = (
         ('N', 'Nacional'),
         ('P', 'Privada'))
-    name = models.TextField(verbose_name=('Nombre'))
-    description = models.TextField(verbose_name=('Descripción'), null=True, blank=True)
-    institution_type = models.CharField(verbose_name=('Tipo'), max_length=3, choices=TYPE_CHOICES)
-    logo = models.ImageField(verbose_name=('Logo'), null=True, blank=True, upload_to=get_upload_file_name)
+    name = models.TextField(verbose_name='Nombre')
+    description = models.TextField(verbose_name='Descripción', null=True, blank=True)
+    institution_type = models.CharField(verbose_name='Tipo', max_length=3, choices=TYPE_CHOICES)
+    logo = models.ImageField(verbose_name='Logo', null=True, blank=True, upload_to=get_upload_file_name)
 
     def __str__(self):
         return self.name
@@ -60,26 +60,34 @@ class PyDepartments(models.Model):
 
 
 class Faculty(models.Model):
-    name = models.TextField(null=True)
-    institution = models.ForeignKey('Institution', on_delete=models.CASCADE)
-    place = models.CharField(max_length=100)
-    lon = models.FloatField(null=True)
-    lat = models.FloatField(null=True)
-    address = models.CharField(max_length=200, null=True)
+    name = models.TextField(verbose_name='Nombre', null=True)
+    place = models.TextField(verbose_name='Lugar', max_length=100, null=True, blank=True)
+    lon = models.FloatField(verbose_name='Latitud', null=True, blank=True)
+    lat = models.FloatField(verbose_name='Longitud', null=True, blank=True)
+    address = models.TextField(verbose_name='Dirección', null=True, blank=True)
+    institution = models.ForeignKey('Institution', on_delete=models.CASCADE, verbose_name='Universidad')
     department_id = models.ForeignKey('PyDepartments', on_delete=models.CASCADE, to_field='department_id', default=18,
-                                      db_column='department_id')
+                                      db_column='department_id', verbose_name='Departamento')
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        verbose_name = 'Facultad'
+        verbose_name_plural = 'Facultades'
 
 
 class Career(models.Model):
-    name = models.TextField()
-    postgraduate = models.BooleanField()
-    faculty = models.ForeignKey('Faculty', on_delete=models.CASCADE)
+    name = models.TextField(verbose_name='Nombre')
+    postgraduate = models.BooleanField(verbose_name='¿Es postgrado?')
+    faculty = models.ForeignKey('Faculty', on_delete=models.CASCADE, verbose_name='Facultad')
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        verbose_name = 'Carrera'
+        verbose_name_plural = 'Carreras'
 
 
 class Tesis(models.Model):
@@ -90,20 +98,20 @@ class Tesis(models.Model):
         ('TM', 'Tesis Maestría')
     )
     title = models.CharField(max_length=200)
+    description = models.TextField(null=True)
     career = models.ForeignKey('Career', on_delete=models.CASCADE)
     url = models.TextField(null=True, blank=True)
     format = models.TextField(null=True, blank=True)
-    description = models.TextField(null=True)
     year = models.PositiveIntegerField(
         validators=[
             MinValueValidator(1900),
             MaxValueValidator(datetime.now().year)],
         help_text="Usar este formato de fecha: <YYYY>")
     tesis_type = models.CharField(max_length=3, choices=TYPE_CHOICES, default='T')
-    tutor = models.ManyToManyField(Person, related_name='tutor')
-    author = models.ManyToManyField(Person, related_name='author')
     added_date = models.DateTimeField(default=django.utils.timezone.now)
     sub_category = models.ManyToManyField('SubCategory', db_column='sub_category')
+    tutor = models.ManyToManyField(Person, related_name='tutor')
+    author = models.ManyToManyField(Person, related_name='author')
 
     class Meta:
         verbose_name_plural = 'Tesis'
@@ -155,23 +163,32 @@ class TesisRanking(models.Model):
 
 
 class Category(models.Model):
-    category_name = models.CharField(max_length=100, db_column='category_name', unique=True)
-    category_fa_icon = models.CharField(max_length=100, db_column='category_fa_icon', null=True)
+    category_name = models.CharField(verbose_name='Nombre', max_length=100, db_column='category_name', unique=True)
+    category_fa_icon = models.CharField(verbose_name='Icono Material o FA', max_length=100,
+                                        default='<i class="material-icons">bubble_chart</i>',
+                                        db_column='category_fa_icon', null=True)
 
     class Meta:
         db_table = 'tesis_category'
+        verbose_name = 'Categoría'
+        verbose_name_plural = 'Categorías'
 
     def __str__(self):
         return self.category_name
 
 
 class SubCategory(models.Model):
-    sub_category_name = models.CharField(max_length=100, db_column='sub_category_name', unique=True)
-    sub_category_fa_icon = models.CharField(max_length=100, db_column='sub_category_fa_icon', null=True)
+    sub_category_name = models.CharField(verbose_name='Nombre', max_length=100, db_column='sub_category_name',
+                                         unique=True)
+    sub_category_fa_icon = models.CharField(verbose_name='Icono Material o FA', max_length=100,
+                                            default='<i class="material-icons">bubble_chart</i>',
+                                            db_column='sub_category_fa_icon', null=True, blank=True)
     categories = models.ManyToManyField('Category', db_column='categories')
 
     class Meta:
         db_table = 'tesis_sub_category'
+        verbose_name = 'Sub Categoría'
+        verbose_name_plural = 'Sub Categorías'
 
     def __str__(self):
         return self.sub_category_name
