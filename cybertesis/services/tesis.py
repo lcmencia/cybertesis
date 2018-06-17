@@ -151,3 +151,30 @@ class TesisServices:
             elif order == ORDER_BY_MOST_VALUED:
                 all_full = Full.objects.all().order_by('-rating', '-year', '-added_date')
         return all_full
+
+    @classmethod
+    def search_in_tesis(cls, search_text, all_full):
+        total_full = list()
+        tutors_full = list()
+        for full in all_full:
+            # Por cada tesis se iteran sus columnas para ver si la palabra existe
+            # Esto puede ser demasiado costoso, por eso la vista de donde se obtienen las tesis
+            # no tiene todas las columnas, solo las que podrian ser de interes ej: nombre, facultad, año y otros
+            for i in range(0, len(full._meta.fields)):
+                key = full._meta.fields[i].attname
+                value = str(full.__getattribute__(key)).lower()
+                # Si la palabra existe se agrega en los resultados
+                if search_text in value:
+                    total_full.append(full)
+                    full_tesis = Tesis.objects.get(pk=full.id)
+                    tutors_name_list = []
+                    for ft_sc in full_tesis.sub_category.all():
+                        # Teniendo las sub-categorías se puede llegar a los tutores de cada tesis
+                        for sc_tesis in ft_sc.tesis_set.all():
+                            tutors_name_list, tutors = TesisServices.generate_tutor_json_list(
+                                tutors_name_list=tutors_name_list,
+                                tutors_obj=sc_tesis.tutor.all(),
+                                subcategy_obj=ft_sc)
+                            tutors_full += tutors
+                    break
+        return total_full, tutors_full

@@ -142,7 +142,7 @@ def index(request):
     # Todas las tesis a mostrarse, ordenado de mas reciente a menos
     if question:
         all_full = tesis_services.get_by_category(0, ORDER_BY_MOST_RECENT)
-        all_full, recommended_tutors = search_in_tesis(question, all_full)
+        all_full, recommended_tutors = TesisServices.search_in_tesis(question, all_full)
     else:
         all_full = tesis_services.get_by_category(category_selected, ORDER_BY_MOST_RECENT)
 
@@ -215,7 +215,7 @@ def search(request):
     all_full = tesis_services.get_by_category(category_id, order)
 
     if len(search_text) > 0:
-        total_full, tutors_full = search_in_tesis(search_text, all_full)
+        total_full, tutors_full = TesisServices.search_in_tesis(search_text, all_full)
 
         # Por cada busqueda, en la tabla de palabras buscadas, si la palabra existe se suma 1, sino se inserta con valor 1
         # Si lo que se ingresa como búsqueda no es una sola pabla, sino una frase, se utiliza filtros tipo Stop y Stemming,
@@ -270,32 +270,6 @@ def search(request):
     # the_data = serializers.serialize("json", [x for x in total_full])
     return JsonResponse(the_data)
 
-
-def search_in_tesis(search_text, all_full):
-    total_full = list()
-    tutors_full = list()
-    for full in all_full:
-        # Por cada tesis se iteran sus columnas para ver si la palabra existe
-        # Esto puede ser demasiado costoso, por eso la vista de donde se obtienen las tesis
-        # no tiene todas las columnas, solo las que podrian ser de interes ej: nombre, facultad, año y otros
-        for i in range(0, len(full._meta.fields)):
-            key = full._meta.fields[i].attname
-            value = str(full.__getattribute__(key)).lower()
-            # Si la palabra existe se agrega en los resultados
-            if search_text in value:
-                total_full.append(full)
-                full_tesis = Tesis.objects.get(pk=full.id)
-                tutors_name_list = []
-                for ft_sc in full_tesis.sub_category.all():
-                    # Teniendo las sub-categorías se puede llegar a los tutores de cada tesis
-                    for sc_tesis in ft_sc.tesis_set.all():
-                        tutors_name_list, tutors = TesisServices.generate_tutor_json_list(
-                            tutors_name_list=tutors_name_list,
-                            tutors_obj=sc_tesis.tutor.all(),
-                            subcategy_obj=ft_sc)
-                        tutors_full += tutors
-                break
-    return total_full, tutors_full
 
 @require_http_methods(['GET'])
 def tesis(request, tesis_id=None):
