@@ -10,3 +10,10 @@ HTTP_RESPONSE_CODES = {
 
 ORDER_BY_MOST_RECENT = 1
 ORDER_BY_MOST_VALUED = 2
+
+TYPE_CHOICES = (
+    ('T', 'Tesis'),
+    ('TD', 'Tesis Doctoral'),
+    ('MS', 'Maestría'),
+    ('TM', 'Tesis Maestría')
+)

@@ -1,3 +1,5 @@
+import json
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core import serializers
@@ -12,8 +14,9 @@ from services.resume import ResumeServices
 
 from django.contrib.auth import authenticate, login
 
+from tesis import constants
 from .constants import ORDER_BY_MOST_RECENT
-from .models import Searches, Category, Tesis, Faculty, Career, Full
+from .models import Searches, Category, Tesis, Faculty, Career, Full, SubCategory
 
 
 def authentication(request):
@@ -47,14 +50,68 @@ def add_tesis(request):
 
     method = request.method
     institution_id = request.user.dataentry.institution.id
-    if method == 'GET':
 
-        return render(request, 'add_tesis.html', {})
+    faculty_list = Faculty.objects.filter(institution__id=institution_id)
+    faculty_list_parsed = list()
+    career_list_parsed = list()
+    subcategory_list_parsed = list()
+    faculty_id_list = list()
+    for faculty in faculty_list:
+        item = {'id': faculty.id, 'name': faculty.name}
+        faculty_list_parsed.append(item)
+        faculty_id_list.append(faculty.id)
+
+    career_list = Career.objects.filter(faculty_id__in=faculty_id_list)
+    for career in career_list:
+        item = {'id': career.id, 'name': career.name, 'fk': career.faculty.id}
+        career_list_parsed.append(item)
+
+    subcategory_list = SubCategory.objects.all()
+    for sub in subcategory_list:
+        item = {'id': sub.id, 'name': sub.sub_category_name}
+        subcategory_list_parsed.append(item)
+
+    if method == 'GET':
+        return render(request, 'add_tesis.html',
+                      {'faculty_list': json.dumps(faculty_list_parsed), 'career_list': json.dumps(career_list_parsed),
+                       'subcategory_list': json.dumps(subcategory_list_parsed), 'types': constants.TYPE_CHOICES})
+
     elif method == 'POST':
         data = request.POST
         title = data.get('title', '')
+        faculty = data.get('faculty', '')
+        career = data.get('career', '')
+        year = data.get('year', '')
+        subcategories = data.getlist('subcategory')
+        resume = data.get('resume', '')
+        link = data.get('link', '')
+        format = data.get('format', '')
+        authors = data.get('authors', '')
+        tutor1 = data.get('tutor1', '')
+        tutor2 = data.get('tutor2', '')
+        type = data.get('type', '')
+        messages = list()
+        if title is None or len(title) == 0:
+            messages.append({'tags': 'alert-danger', 'text': 'Ingrese el título'})
+        if resume is None or len(resume) == 0:
+            messages.append({'tags': 'alert-danger', 'text': 'Ingrese el resumen'})
+        if year is None or len(year) == 0:
+            messages.append({'tags': 'alert-danger', 'text': 'Ingrese el año'})
+        if subcategories is None or len(subcategories) == 0:
+            messages.append({'tags': 'alert-danger', 'text': 'Seleccione al menos una subcategoria'})
+        if authors is None or len(authors) == 0:
+            messages.append({'tags': 'alert-danger', 'text': 'Ingrese el/los autor/es'})
+        if (tutor1 is None or len(tutor1) == 0) and (tutor2 is None or len(tutor2) == 0):
+            messages.append({'tags': 'alert-danger', 'text': 'Ingrese el/los tutor/es'})
 
-        print("A")
+
+
+        return render(request, 'add_tesis.html',
+                      {'faculty_list': json.dumps(faculty_list_parsed), 'career_list': json.dumps(career_list_parsed),
+                       'subcategory_list': json.dumps(subcategory_list_parsed), 'types': constants.TYPE_CHOICES,
+                       'messages': messages, 'format': format, 'title': title, 'faculty': faculty, 'career': career,
+                       'year': year, 'authors': authors, 'link': link, 'subcategories': subcategories, 'resume': resume,
+                       'tutor1': tutor1, 'tutor2': tutor2, 'type': type})
 
 
 @require_http_methods(['GET'])

@@ -10,6 +10,8 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
+from tesis import constants
+
 
 class DocumentType(models.Model):
     name = models.CharField(max_length=20)
@@ -91,12 +93,6 @@ class Career(models.Model):
 
 
 class Tesis(models.Model):
-    TYPE_CHOICES = (
-        ('T', 'Tesis'),
-        ('TD', 'Tesis Doctoral'),
-        ('MS', 'Maestría'),
-        ('TM', 'Tesis Maestría')
-    )
     title = models.CharField(max_length=200)
     description = models.TextField(null=True)
     career = models.ForeignKey('Career', on_delete=models.CASCADE)
@@ -107,7 +103,7 @@ class Tesis(models.Model):
             MinValueValidator(1900),
             MaxValueValidator(datetime.now().year)],
         help_text="Usar este formato de fecha: <YYYY>")
-    tesis_type = models.CharField(max_length=3, choices=TYPE_CHOICES, default='T')
+    tesis_type = models.CharField(max_length=3, choices=constants.TYPE_CHOICES, default='T')
     added_date = models.DateTimeField(default=django.utils.timezone.now)
     sub_category = models.ManyToManyField('SubCategory', db_column='sub_category')
     tutor = models.ManyToManyField(Person, related_name='tutor')

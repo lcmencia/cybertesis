@@ -9,7 +9,9 @@
 {% endblock styles %}
 {% block top_scripts %}
     <script>
-        var csrf = '{{ csrf_token }}'
+        var facultyList = JSON.parse('{{ faculty_list|safe }}');
+        var careerList = JSON.parse('{{ career_list|safe }}');
+        var subcategoryList = JSON.parse('{{ subcategory_list|safe }}');
     </script>
 
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.js"></script>
@@ -29,6 +31,10 @@
     <div id = "alert_placeholder"></div>
 {% endblock messages %}
 
+{% block nav_bar %}
+    {% include 'sections/dataentry_nav_bar.html' %}
+{% endblock nav_bar %}
+
 {% block content %}
     <div class="content">
         <div class="container-fluid">
@@ -45,31 +51,42 @@
                                     <div class="col-md-12">
                                         <div class="form-group">
                                             <label class="bmd-label-floating">Titulo</label>
-                                            <input type="text" class="form-control" name="title"
-                                                   value="{{ tesis.title|default:'' }}">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="form-group">
-                                            <label class="bmd-label-floating">Facultad</label>
-                                            <input type="text" class="form-control"
-                                                   value="{{ tesis.faculty_name|default:'' }}">
+                                            <input autocomplete="off" type="text" class="form-control" name="title"
+                                                   value="{{ title|default:'' }}">
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-8">
                                         <div class="form-group">
-                                            <label class="bmd-label-floating">Carrera</label>
-                                            <input type="text" class="form-control" value="{{ tesis.career_name|default:'' }}">
+                                            <label class="bmd-label-floating">Facultad</label>
+                                            <select id="faculty_select" class="form-control" name="faculty"></select>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="bmd-label-floating">Año</label>
-                                            <input type="text" class="form-control" value="{{ tesis.year|default:'' }}">
+                                            <label class="bmd-label-floating">Tipo</label>
+                                            <select id="type_select" class="form-control" name="type">
+                                                {% for item in types %}
+                                                    <option value="{{ item.0 }}" {% if type == item.0 %} selected {% endif %}>{{ item.1|default:'' }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label class="bmd-label-floating">Carrera</label>
+                                            <select id="career_select" class="form-control" name="career"></select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label class="bmd-label-floating">Subcategorias</label>
+                                            <select style="height: 62pt" multiple="multiple" id="subcategory_select" class="form-control" name="subcategory"></select>
                                         </div>
                                     </div>
                                 </div>
@@ -77,24 +94,30 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label class="bmd-label-floating">Tutor 1</label>
-                                            <input type="text" class="form-control"
-                                                   value="{{ tesis.tutor1|default:'' }}">
+                                            <input autocomplete="off" type="text" class="form-control" name="tutor1"
+                                                   value="{{ tutor1|default:'' }}">
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label class="bmd-label-floating">Tutor 2</label>
-                                            <input type="text" class="form-control"
-                                                   value="{{ tesis.tutor2|default:'' }}">
+                                            <input autocomplete="off" type="text" class="form-control" name="tutor2"
+                                                   value="{{ tutor2|default:'' }}">
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-12">
+                                    <div class="col-md-10">
                                         <div class="form-group">
                                             <label class="bmd-label-floating">Autores (separados por comas)</label>
-                                            <input type="text" class="form-control"
-                                                   value="{{ tesis.authors|default:'' }}">
+                                            <input autocomplete="off" type="text" class="form-control" name="authors"
+                                                   value="{{ authors|default:'' }}">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label class="bmd-label-floating">Año</label>
+                                            <input autocomplete="off" name="year" type="text" class="form-control" value="{{ year|default:'' }}">
                                         </div>
                                     </div>
                                 </div>
@@ -102,7 +125,7 @@
                                     <div class="col-md-12">
                                         <div class="form-group">
                                             <label class="bmd-label-floating">Resumen</label>
-                                            <textarea class="form-control" rows="5"></textarea>
+                                            <textarea autocomplete="off" name="resume" class="form-control" rows="5">{{ resume|default:'' }}</textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -110,15 +133,15 @@
                                     <div class="col-md-9">
                                         <div class="form-group">
                                             <label class="bmd-label-floating">Link</label>
-                                            <input type="text" class="form-control"
-                                                   value="{{ tesis.url|default:'' }}">
+                                            <input autocomplete="off" type="text" class="form-control" name="link"
+                                                   value="{{ link|default:'' }}">
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <label class="bmd-label-floating">Formato</label>
-                                            <input type="text" class="form-control"
-                                                   value="{{ tesis.format|default:'' }}">
+                                            <input autocomplete="off" type="text" class="form-control" name="format"
+                                                   value="{{ format|default:'' }}">
                                         </div>
                                     </div>
                                 </div>
@@ -153,4 +176,5 @@
 
 {% block bottom_js %}
     {% include 'utils/base_js.html' %}
+    <script src="{% static 'assets/js/cybertesis/selects.js' %}"></script>
 {% endblock bottom_js %}
