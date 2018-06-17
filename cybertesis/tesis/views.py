@@ -1,7 +1,8 @@
 from django.contrib import messages
-from django.core import serializers
+from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
+from django.template.loader import render_to_string
 from django.views.decorators.http import require_http_methods
 from whoosh.analysis import StopFilter, LanguageAnalyzer, StemFilter
 
@@ -30,6 +31,7 @@ def authentication(request):
 @require_http_methods(['GET'])
 def index(request):
     data = request.GET
+    question = data.get('q', None)
     category_selected = 0
     category_name = ''
 
@@ -50,7 +52,12 @@ def index(request):
             category_name = category.category_name
 
     # Todas las tesis a mostrarse, ordenado de mas reciente a menos
-    all_full = tesis_services.get_by_category(category_selected, ORDER_BY_MOST_RECENT)
+    if question:
+        tutors_full = list()
+        all_full = tesis_services.get_by_category(0, ORDER_BY_MOST_RECENT)
+        all_full, tutors_full = search_in_tesis(question, all_full)
+    else:
+        all_full = tesis_services.get_by_category(category_selected, ORDER_BY_MOST_RECENT)
 
     ################ Seccion resumen (4 cuadraditos) ################
     resume_service = ResumeServices()
@@ -80,6 +87,10 @@ def index(request):
     # Top de busquedas
     top_words_searched = searches_services.top_words_searched
 
+    # Paginado de lista de tesis
+    paginator = Paginator(all_full, 5)
+    page = request.GET.get('page')
+    tesis_list = paginator.get_page(page)
     context = {
         # C1
         'total_tesis': total_tesis, 'init_year': init_year,
@@ -92,13 +103,16 @@ def index(request):
         # Tabla busquedas
         'top_words_searched': top_words_searched,
         # Tabla tesis
-        'tesis_list': all_full,
+        'tesis_list': tesis_list,
         # Top categorias de la izquierda
         'tesis_top_categories': tesis_top_categories,
         # Filtro de categoria
         'category_name': category_name, 'category_selected': category_selected,
         # Tutores recomendados
-        'recommended_tutors': recommended_tutors}
+        'recommended_tutors': recommended_tutors,
+        # Pregunta buscada, para el caso de paginación
+        'question':question
+    }
     return render(request, "index.html", context)
 
 
@@ -107,33 +121,14 @@ def search(request):
     data = request.GET
     category_id = int(data.get('category_id', 0))
     order = int(data.get('order', ORDER_BY_MOST_RECENT))
-    search = data.get('search_text', '').lower()
+    search_text = data.get('search_text', '').lower()
     tesis_services = TesisServices()
     total_full = list()
     tutors_full = list()
     all_full = tesis_services.get_by_category(category_id, order)
 
-    if len(search) > 0:
-        for full in all_full:
-            # Por cada tesis se iteran sus columnas para ver si la palabra existe
-            # Esto puede ser demasiado costoso, por eso la vista de donde se obtienen las tesis
-            # no tiene todas las columnas, solo las que podrian ser de interes ej: nombre, facultad, año y otros
-            for i in range(0, len(full._meta.fields)):
-                key = full._meta.fields[i].attname
-                value = str(full.__getattribute__(key)).lower()
-                # Si la palabra existe se agrega en los resultados
-                if search in value:
-                    total_full.append(full)
-                    full_tesis = Tesis.objects.get(pk=full.id)
-                    tutors_name_list = []
-                    for ft_sc in full_tesis.sub_category.all():
-                        # Teniendo las sub-categorías se puede llegar a los tutores de cada tesis
-                        for sc_tesis in ft_sc.tesis_set.all():
-                            tutors_name_list, tutors = TesisServices.generate_tutor_json_list(tutors_name_list=tutors_name_list,
-                                                                                                   tutors_obj=sc_tesis.tutor.all(),
-                                                                                                   subcategy_obj=ft_sc)
-                            tutors_full += tutors
-                    break
+    if len(search_text) > 0:
+        total_full, tutors_full = search_in_tesis(search_text, all_full)
 
         # Por cada busqueda, en la tabla de palabras buscadas, si la palabra existe se suma 1, sino se inserta con valor 1
         # Si lo que se ingresa como búsqueda no es una sola pabla, sino una frase, se utiliza filtros tipo Stop y Stemming,
@@ -145,12 +140,12 @@ def search(request):
         Stemming is a heuristic process of removing suffixes (and sometimes prefixes) from words to arrive (hopefully, 
         most of the time) at the base word.
         """
-        if len(search.split()) > 1:
+        if len(search_text.split()) > 1:
             analyzer = LanguageAnalyzer("es")
             a_filters = StopFilter() | StemFilter()
-            keywords = list(set([token.text for token in a_filters(analyzer(search, no_morph=True))]))
+            keywords = list(set([token.text for token in a_filters(analyzer(search_text, no_morph=True))]))
         else:
-            keywords = [search]
+            keywords = [search_text]
 
         for word in keywords:
             obj, created = Searches.objects.update_or_create(word=word)
@@ -173,15 +168,47 @@ def search(request):
     # Total de busquedas en el sitio
     total_searchs = searches_services.total_searchs
 
-    the_data = {'tesis_list': serializers.serialize("json", [x for x in total_full]),
+    # Paginado de lista de tesis
+    paginator = Paginator(total_full, 2)
+    page = request.GET.get('page')
+    tesis_list = paginator.get_page(page)
+    the_data = {'tesis_list': render_to_string('sections/central_published_tesis.html', {'tesis_list': tesis_list,
+                                                                                         'question': search_text}),#serializers.serialize("json", [x for x in total_full]),
                 'tutors_list': tutors_full,
                 'top_words_searched': top_words_searched,
                 'total_words': total_words,
-                'total_searchs': total_searchs
+                'total_searchs': total_searchs,
+                'question': search_text
                 }
     # the_data = serializers.serialize("json", [x for x in total_full])
     return JsonResponse(the_data)
 
+
+def search_in_tesis(search_text, all_full):
+    total_full = list()
+    tutors_full = list()
+    for full in all_full:
+        # Por cada tesis se iteran sus columnas para ver si la palabra existe
+        # Esto puede ser demasiado costoso, por eso la vista de donde se obtienen las tesis
+        # no tiene todas las columnas, solo las que podrian ser de interes ej: nombre, facultad, año y otros
+        for i in range(0, len(full._meta.fields)):
+            key = full._meta.fields[i].attname
+            value = str(full.__getattribute__(key)).lower()
+            # Si la palabra existe se agrega en los resultados
+            if search_text in value:
+                total_full.append(full)
+                full_tesis = Tesis.objects.get(pk=full.id)
+                tutors_name_list = []
+                for ft_sc in full_tesis.sub_category.all():
+                    # Teniendo las sub-categorías se puede llegar a los tutores de cada tesis
+                    for sc_tesis in ft_sc.tesis_set.all():
+                        tutors_name_list, tutors = TesisServices.generate_tutor_json_list(
+                            tutors_name_list=tutors_name_list,
+                            tutors_obj=sc_tesis.tutor.all(),
+                            subcategy_obj=ft_sc)
+                        tutors_full += tutors
+                break
+    return total_full, tutors_full
 
 @require_http_methods(['GET'])
 def tesis(request, tesis_id=None):
