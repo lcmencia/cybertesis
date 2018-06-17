@@ -55,7 +55,7 @@ function ajax_search_text(search_text, order){
         type: 'GET',
         data: data,
         success: function(data){
-            renderResultadosTesis(data.tesis_list);
+            renderResultadosTesis(data.tesis_list, order);
             renderResultadosTutors(data.tutors_list);
             renderTopSearchedWords(data.top_words_searched);
             renderSearchStats(data.total_words, data.total_searchs);
@@ -87,8 +87,18 @@ var getUrlParameter = function getUrlParameter(sParam) {
     }
 };
 
-function renderResultadosTesis(data){
+function renderResultadosTesis(data, order){
     $("#id-tesis-result-container").html(data);
+    var navs = $("#id-tesis-result-container").find('.nav-link')
+    var recent = navs[0];
+    var rating = navs[1];
+    if (order=='1'){
+        rating.classList.remove("active");
+        recent.classList.add("active");
+    }else{
+        recent.classList.remove("active");
+        rating.classList.add("active");
+    }
 }
 
 function renderResultadosTutors(data){
