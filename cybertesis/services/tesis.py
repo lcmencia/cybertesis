@@ -153,10 +153,14 @@ class TesisServices:
             elif order == ORDER_BY_MOST_VALUED:
                 all_full = Full.objects.filter(pk__in=list(tesis_id_list)).order_by('-rating', '-year', '-added_date')
         else:
-            if order == ORDER_BY_MOST_RECENT:
-                all_full = Full.objects.all().order_by('-year', '-added_date')
-            elif order == ORDER_BY_MOST_VALUED:
-                all_full = Full.objects.all().order_by('-rating', '-year', '-added_date')
+            if len(tesis_id_list) == 0 and category_id > 0:
+                # No hay tesis para esta categoria
+                all_full = list()
+            else:
+                if order == ORDER_BY_MOST_RECENT:
+                    all_full = Full.objects.all().order_by('-year', '-added_date')
+                elif order == ORDER_BY_MOST_VALUED:
+                    all_full = Full.objects.all().order_by('-rating', '-year', '-added_date')
         return all_full
 
     @classmethod
