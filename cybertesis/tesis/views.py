@@ -16,7 +16,7 @@ from django.contrib.auth import authenticate, login
 
 from tesis import constants
 from .constants import ORDER_BY_MOST_RECENT
-from .models import Searches, Category, Tesis, Faculty, Career, Full, SubCategory
+from .models import Searches, Category, Tesis, Faculty, Career, Full, SubCategory, Person
 
 
 def authentication(request):
@@ -94,24 +94,57 @@ def add_tesis(request):
         if title is None or len(title) == 0:
             messages.append({'tags': 'alert-danger', 'text': 'Ingrese el título'})
         if resume is None or len(resume) == 0:
-            messages.append({'tags': 'alert-danger', 'text': 'Ingrese el resumen'})
+            if len(messages) == 0:
+                messages.append({'tags': 'alert-danger', 'text': 'Ingrese el resumen'})
         if year is None or len(year) == 0:
-            messages.append({'tags': 'alert-danger', 'text': 'Ingrese el año'})
+            if len(messages) == 0:
+                messages.append({'tags': 'alert-danger', 'text': 'Ingrese el año'})
         if subcategories is None or len(subcategories) == 0:
-            messages.append({'tags': 'alert-danger', 'text': 'Seleccione al menos una subcategoria'})
+            if len(messages) == 0:
+                messages.append({'tags': 'alert-danger', 'text': 'Seleccione al menos una subcategoria'})
         if authors is None or len(authors) == 0:
-            messages.append({'tags': 'alert-danger', 'text': 'Ingrese el/los autor/es'})
+            if len(messages) == 0:
+                messages.append({'tags': 'alert-danger', 'text': 'Ingrese el/los autor/es'})
         if (tutor1 is None or len(tutor1) == 0) and (tutor2 is None or len(tutor2) == 0):
-            messages.append({'tags': 'alert-danger', 'text': 'Ingrese el/los tutor/es'})
+            if len(messages) == 0:
+                messages.append({'tags': 'alert-danger', 'text': 'Ingrese el/los tutor/es'})
 
+        if len(messages) == 0:
+            new_tesis = Tesis()
+            new_tesis.title = title
+            new_tesis.description = resume
+            new_tesis.tesis_type = type
+            new_tesis.url = link
+            new_tesis.format = format
+            new_tesis.year = year
+            new_tesis.career = Career.objects.get(pk=career)
+            new_tesis.save()
 
+            authors_checked = authors.split(",")
+            for a in authors_checked:
+                obj, created = Person.objects.update_or_create(name=a)
+                new_tesis.author.add(obj)
+            if not (tutor1 is None or len(tutor1) == 0):
+                obj, created = Person.objects.update_or_create(name=tutor1)
+                new_tesis.tutor.add(obj)
+            if not (tutor2 is None or len(tutor2) == 0):
+                obj, created = Person.objects.update_or_create(name=tutor2)
+                new_tesis.tutor.add(obj)
+            for s in subcategories:
+                new_tesis.sub_category.add(SubCategory.objects.get(pk=s))
+            new_tesis.save()
+            messages.append({'tags': 'alert-success', 'text': 'Tesis creada'})
+            return render(request, 'add_tesis.html',
+                          {'faculty_list': json.dumps(faculty_list_parsed),
+                           'career_list': json.dumps(career_list_parsed), 'messages': messages,
+                           'subcategory_list': json.dumps(subcategory_list_parsed), 'types': constants.TYPE_CHOICES})
 
         return render(request, 'add_tesis.html',
                       {'faculty_list': json.dumps(faculty_list_parsed), 'career_list': json.dumps(career_list_parsed),
                        'subcategory_list': json.dumps(subcategory_list_parsed), 'types': constants.TYPE_CHOICES,
                        'messages': messages, 'format': format, 'title': title, 'faculty': faculty, 'career': career,
-                       'year': year, 'authors': authors, 'link': link, 'subcategories': subcategories, 'resume': resume,
-                       'tutor1': tutor1, 'tutor2': tutor2, 'type': type})
+                       'year': year, 'authors': authors, 'link': link, 'subcategories': json.dumps(subcategories),
+                       'resume': resume, 'tutor1': tutor1, 'tutor2': tutor2, 'type': type})
 
 
 @require_http_methods(['GET'])

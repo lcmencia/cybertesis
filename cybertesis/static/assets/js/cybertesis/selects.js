@@ -5,6 +5,10 @@ $(document).ready(function() {
        $faculty_select.append($("<option></option>").attr("value", facultyList[i].id).text(facultyList[i].name));
    }
 
+   if (faculty_check != ''){
+       $faculty_select.val(faculty_check);
+   }
+
    var faculty_selected = $("#faculty_select").val();
    var $career_select = $("#career_select");
    var career_len = careerList.length;
@@ -29,5 +33,10 @@ $(document).ready(function() {
     var subcategory_len = subcategoryList.length;
     for (var i = 0; i < subcategory_len; i++){
        $subcategory_select.append($("<option></option>").attr("value", subcategoryList[i].id).text(subcategoryList[i].name));
+    }
+
+    if (subcategories_check != ''){
+       var checked = JSON.parse(subcategories_check);
+       $subcategory_select.val(checked);
     }
 });

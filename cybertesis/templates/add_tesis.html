@@ -12,6 +12,9 @@
         var facultyList = JSON.parse('{{ faculty_list|safe }}');
         var careerList = JSON.parse('{{ career_list|safe }}');
         var subcategoryList = JSON.parse('{{ subcategory_list|safe }}');
+        var faculty_check = {% if faculty %} '{{ faculty }}' {% else %} '' {% endif %};
+        var career_check = {% if career %} '{{ career }}' {% else %} '' {% endif %};
+        var subcategories_check = {% if subcategories %} '{{ subcategories|safe }}' {% else %} '' {% endif %};
     </script>
 
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.js"></script>
