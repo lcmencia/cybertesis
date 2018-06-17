@@ -6,8 +6,9 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from datetime import datetime
 from django.contrib.auth.models import User
 
-
 # Create your models here.
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 
 class DocumentType(models.Model):
@@ -31,22 +32,31 @@ class Institution(models.Model):
     TYPE_CHOICES = (
         ('N', 'Nacional'),
         ('P', 'Privada'))
-    name = models.TextField()
-    description = models.TextField(null=True)
-    institution_type = models.CharField(max_length=3, choices=TYPE_CHOICES)
-    logo = models.ImageField(null=True, blank=True, upload_to=get_upload_file_name)
+    name = models.TextField(verbose_name=('Nombre'))
+    description = models.TextField(verbose_name=('Descripción'), null=True, blank=True)
+    institution_type = models.CharField(verbose_name=('Tipo'), max_length=3, choices=TYPE_CHOICES)
+    logo = models.ImageField(verbose_name=('Logo'), null=True, blank=True, upload_to=get_upload_file_name)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = 'Universidad'
+        verbose_name_plural = 'Universidades'
 
 
 class PyDepartments(models.Model):
     department_id = models.AutoField(primary_key=True, db_column='department_id')
     department_name = models.CharField(max_length=100, null=False, blank=False, db_column='department_name')
     department_capital = models.CharField(max_length=100, null=False, blank=False, db_column='department_capital')
-    lat = models.FloatField(null=True, db_column='lat'),
+    lat = models.FloatField(null=True, db_column='lat')
     lon = models.FloatField(null=True, db_column='lon')
 
     class Meta:
         db_table = 'tesis_py_departments'
-        managed = False
+
+    def __str__(self):
+        return self.department_name
 
 
 class Faculty(models.Model):
@@ -59,11 +69,17 @@ class Faculty(models.Model):
     department_id = models.ForeignKey('PyDepartments', on_delete=models.CASCADE, to_field='department_id', default=18,
                                       db_column='department_id')
 
+    def __str__(self):
+        return self.name
+
 
 class Career(models.Model):
     name = models.TextField()
     postgraduate = models.BooleanField()
     faculty = models.ForeignKey('Faculty', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
 
 
 class Tesis(models.Model):
@@ -75,8 +91,8 @@ class Tesis(models.Model):
     )
     title = models.CharField(max_length=200)
     career = models.ForeignKey('Career', on_delete=models.CASCADE)
-    url = models.CharField(max_length=200, null=True)
-    format = models.CharField(max_length=10, null=True)
+    url = models.TextField(null=True, blank=True)
+    format = models.TextField(null=True, blank=True)
     description = models.TextField(null=True)
     year = models.PositiveIntegerField(
         validators=[
@@ -91,6 +107,9 @@ class Tesis(models.Model):
 
     class Meta:
         verbose_name_plural = 'Tesis'
+
+    def __str__(self):
+        return self.title
 
 
 class Full(models.Model):
@@ -142,6 +161,9 @@ class Category(models.Model):
     class Meta:
         db_table = 'tesis_category'
 
+    def __str__(self):
+        return self.category_name
+
 
 class SubCategory(models.Model):
     sub_category_name = models.CharField(max_length=100, db_column='sub_category_name', unique=True)
@@ -151,7 +173,20 @@ class SubCategory(models.Model):
     class Meta:
         db_table = 'tesis_sub_category'
 
+    def __str__(self):
+        return self.sub_category_name
+
 
 class DataEntry(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    institution = models.ForeignKey('Institution', on_delete=models.CASCADE)
+    institution = models.ForeignKey('Institution', on_delete=models.CASCADE, null=True)
+
+    def __str__(self):
+        return self.user.username
+
+
+@receiver(post_save, sender=User)
+def create_or_update_user_profile(sender, instance, created, **kwargs):
+    if created:
+        DataEntry.objects.create(user=instance)
+    instance.dataentry.save()
