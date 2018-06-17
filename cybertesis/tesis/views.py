@@ -141,9 +141,8 @@ def index(request):
 
     # Todas las tesis a mostrarse, ordenado de mas reciente a menos
     if question:
-        tutors_full = list()
         all_full = tesis_services.get_by_category(0, ORDER_BY_MOST_RECENT)
-        all_full, tutors_full = search_in_tesis(question, all_full)
+        all_full, recommended_tutors = search_in_tesis(question, all_full)
     else:
         all_full = tesis_services.get_by_category(category_selected, ORDER_BY_MOST_RECENT)
 
@@ -257,7 +256,7 @@ def search(request):
     total_searchs = searches_services.total_searchs
 
     # Paginado de lista de tesis
-    paginator = Paginator(total_full, 2)
+    paginator = Paginator(total_full, 5)
     page = request.GET.get('page')
     tesis_list = paginator.get_page(page)
     the_data = {'tesis_list': render_to_string('sections/central_published_tesis.html', {'tesis_list': tesis_list,
