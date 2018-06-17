@@ -1,3 +1,4 @@
 .idea/
 cybertesis/tesis/local_settings.py
 cybertesis/whoosh_index/
+cybertesis/mediafiles/
