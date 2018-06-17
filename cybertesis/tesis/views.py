@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.core import serializers
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
@@ -12,7 +13,7 @@ from services.resume import ResumeServices
 from django.contrib.auth import authenticate, login
 
 from .constants import ORDER_BY_MOST_RECENT
-from .models import Searches, Category, Tesis
+from .models import Searches, Category, Tesis, Faculty, Career, Full
 
 
 def authentication(request):
@@ -21,12 +22,37 @@ def authentication(request):
     user = authenticate(request, username=username, password=password)
     if user is not None:
         login(request, user)
-        return redirect('/')
+        return redirect('/dashboard')
     else:
         return render(request, 'login.html', {})
 
 
-# @login_required()
+@login_required()
+@require_http_methods(['GET'])
+def dashboard(request):
+    if not request.user.is_authenticated or request.user.dataentry.institution == None:
+        return redirect('/login')
+
+    institution_id = request.user.dataentry.institution.id
+    full_list = Full.objects.filter(institution_id=institution_id)
+    #tesis_list = serializers.serialize("json", [x for x in full_list])
+
+    # faculty_list = Faculty.objects.filter(institution__id=institution_id)
+    # faculty_id_list = list()
+    # for faculty in faculty_list:
+    #     faculty_id_list.append(faculty.id)
+    #
+    # career_list = Career.objects.filter(faculty_id__in=faculty_id_list)
+    # career_id_list = list()
+    # for career in career_list:
+    #     career_id_list.append(career.id)
+    #
+    # request.session['faculty_list'] = serializers.serialize("json", [y for y in faculty_list])
+    # request.session['career_list'] = serializers.serialize("json", [x for x in career_list])
+
+    return render(request, 'dashboard.html', {'tesis_list': full_list})
+
+
 @require_http_methods(['GET'])
 def index(request):
     data = request.GET
@@ -129,9 +155,10 @@ def search(request):
                     for ft_sc in full_tesis.sub_category.all():
                         # Teniendo las sub-categorías se puede llegar a los tutores de cada tesis
                         for sc_tesis in ft_sc.tesis_set.all():
-                            tutors_name_list, tutors = TesisServices.generate_tutor_json_list(tutors_name_list=tutors_name_list,
-                                                                                                   tutors_obj=sc_tesis.tutor.all(),
-                                                                                                   subcategy_obj=ft_sc)
+                            tutors_name_list, tutors = TesisServices.generate_tutor_json_list(
+                                tutors_name_list=tutors_name_list,
+                                tutors_obj=sc_tesis.tutor.all(),
+                                subcategy_obj=ft_sc)
                             tutors_full += tutors
                     break
 

@@ -165,7 +165,7 @@ class TesisRanking(models.Model):
 class Category(models.Model):
     category_name = models.CharField(verbose_name='Nombre', max_length=100, db_column='category_name', unique=True)
     category_fa_icon = models.CharField(verbose_name='Icono Material o FA', max_length=100,
-                                        default='<i class="material-icons">bubble_chart</i>',
+                                        default='<i class="fa fa-book-open"></i>',
                                         db_column='category_fa_icon', null=True)
 
     class Meta:
@@ -196,7 +196,7 @@ class SubCategory(models.Model):
 
 class DataEntry(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    institution = models.ForeignKey('Institution', on_delete=models.CASCADE, null=True)
+    institution = models.ForeignKey('Institution', on_delete=models.CASCADE, null=True, verbose_name='Universidad')
 
     def __str__(self):
         return self.user.username

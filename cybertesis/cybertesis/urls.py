@@ -14,11 +14,11 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.conf.urls import url
+from django.conf.urls.static import static
 from django.contrib import admin
+from django.contrib.auth import views as auth_views
 from django.urls import path, include
 from tesis import views
-from django.contrib.auth import views as auth_views
-from django.conf.urls.static import static
 
 from . import settings
 
@@ -31,6 +31,7 @@ urlpatterns = [
     path('tesis/<int:tesis_id>/', views.tesis, name='tesis'),
     url(r'^ajax/', include('ajax.urls')),
     url(r'^search/', include('haystack.urls')),
+    path('dashboard/', views.dashboard, name='dashboard'),
 ]
 
 if settings.DEBUG:

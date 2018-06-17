@@ -148,7 +148,7 @@ except Exception as e:
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'cybertesis2',
+        'NAME': 'cybertesis',
         'USER': 'postgres',
         'PASSWORD': '',
         'HOST': 'localhost',
