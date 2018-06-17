@@ -93,11 +93,13 @@ class TesisServices:
             if tesis:
                 tesis_data['id'] = tesis_id
                 tesis_data['title'] = tesis.title
+                tesis_data['career_id'] = tesis.career.id
                 tesis_data['career_name'] = tesis.career.name
                 tesis_data['postgraduate'] = tesis.career.postgraduate
                 tesis_data['institution'] = tesis.career.faculty.institution.name
                 tesis_data['logo'] = tesis.career.faculty.institution.logo
                 tesis_data['faculty'] = tesis.career.faculty.name
+                tesis_data['faculty_id'] = tesis.career.faculty.id
                 tesis_data['place'] = tesis.career.faculty.department_id.department_name
                 tesis_data['url'] = tesis.url
                 tesis_data['format'] = tesis.format
@@ -118,6 +120,11 @@ class TesisServices:
                 for author in tesis.author.all()[:2]:
                     authors.append(author.name)
                 tesis_data['authors'] = ', '.join(authors)
+
+                subcats = []
+                for sub in tesis.sub_category.all()[:2]:
+                    subcats.append(sub.id)
+                tesis_data['subcategories'] = subcats
         except Exception as e:
             return None
         return tesis_data

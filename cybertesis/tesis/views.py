@@ -134,7 +134,7 @@ def add_tesis(request):
                 new_tesis.tutor.add(obj)
             for s in subcategories:
                 new_tesis.sub_category.add(SubCategory.objects.get(pk=s))
-            new_tesis.save()
+
             messages.append({'tags': 'alert-success', 'text': 'Tesis creada'})
             return render(request, 'add_tesis.html',
                           {'faculty_list': json.dumps(faculty_list_parsed),
@@ -231,7 +231,7 @@ def index(request):
         # Tutores recomendados
         'recommended_tutors': recommended_tutors,
         # Pregunta buscada, para el caso de paginación
-        'question':question
+        'question': question
     }
     return render(request, "index.html", context)
 
@@ -293,7 +293,8 @@ def search(request):
     page = request.GET.get('page')
     tesis_list = paginator.get_page(page)
     the_data = {'tesis_list': render_to_string('sections/central_published_tesis.html', {'tesis_list': tesis_list,
-                                                                                         'question': search_text}),#serializers.serialize("json", [x for x in total_full]),
+                                                                                         'question': search_text}),
+                # serializers.serialize("json", [x for x in total_full]),
                 'tutors_list': tutors_full,
                 'top_words_searched': top_words_searched,
                 'total_words': total_words,
@@ -316,3 +317,124 @@ def tesis(request, tesis_id=None):
     else:
         messages.error(request, 'No se ha encontrado una tesis para el ID correspondiente')
         return redirect('index')
+
+
+@login_required()
+@require_http_methods(['GET', 'POST'])
+def edit(request, tesis_id=None):
+    if not request.user.is_authenticated or request.user.dataentry.institution == None:
+        return redirect('/login')
+
+    tesis_data = {}
+    if tesis_id:
+        tesis_data = TesisServices.get_by_id(tesis_id)
+
+        year = tesis_data['year']
+        title = tesis_data['title']
+        tutor1 = tesis_data['tutor1']
+        tutor2 = tesis_data['tutor2']
+        link = tesis_data['url']
+        format = tesis_data['format']
+        authors = tesis_data['authors']
+        resume = tesis_data['description']
+        subcategories = tesis_data['subcategories']
+        type = tesis_data['type']
+        faculty_id = tesis_data['faculty_id']
+        career_id = tesis_data['career_id']
+
+        method = request.method
+        institution_id = request.user.dataentry.institution.id
+
+        faculty_list = Faculty.objects.filter(institution__id=institution_id)
+        faculty_list_parsed = list()
+        career_list_parsed = list()
+        subcategory_list_parsed = list()
+        faculty_id_list = list()
+        for faculty in faculty_list:
+            item = {'id': faculty.id, 'name': faculty.name}
+            faculty_list_parsed.append(item)
+            faculty_id_list.append(faculty.id)
+
+        career_list = Career.objects.filter(faculty_id__in=faculty_id_list)
+        for career in career_list:
+            item = {'id': career.id, 'name': career.name, 'fk': career.faculty.id}
+            career_list_parsed.append(item)
+
+        subcategory_list = SubCategory.objects.all()
+        for sub in subcategory_list:
+            item = {'id': sub.id, 'name': sub.sub_category_name}
+            subcategory_list_parsed.append(item)
+
+        if method == 'GET':
+            return render(request, 'add_tesis.html',
+                          {'faculty_list': json.dumps(faculty_list_parsed),
+                           'career_list': json.dumps(career_list_parsed),
+                           'subcategory_list': json.dumps(subcategory_list_parsed), 'types': constants.TYPE_CHOICES,
+                           'format': format, 'title': title, 'faculty': faculty_id, 'career': career_id, 'edit': 'true',
+                           'year': year, 'authors': authors, 'link': link, 'subcategories': json.dumps(subcategories),
+                           'resume': resume, 'tutor1': tutor1, 'tutor2': tutor2, 'type': type})
+        elif method == 'POST':
+            data = request.POST
+            title = data.get('title', '')
+            faculty = data.get('faculty', '')
+            career = data.get('career', '')
+            year = data.get('year', '')
+            subcategories = data.getlist('subcategory')
+            resume = data.get('resume', '')
+            link = data.get('link', '')
+            format = data.get('format', '')
+            authors = data.get('authors', '')
+            tutor1 = data.get('tutor1', '')
+            tutor2 = data.get('tutor2', '')
+            type = data.get('type', '')
+            messages = list()
+            if title is None or len(title) == 0:
+                messages.append({'tags': 'alert-danger', 'text': 'Ingrese el título'})
+            if resume is None or len(resume) == 0:
+                if len(messages) == 0:
+                    messages.append({'tags': 'alert-danger', 'text': 'Ingrese el resumen'})
+            if year is None or len(year) == 0:
+                if len(messages) == 0:
+                    messages.append({'tags': 'alert-danger', 'text': 'Ingrese el año'})
+            if subcategories is None or len(subcategories) == 0:
+                if len(messages) == 0:
+                    messages.append({'tags': 'alert-danger', 'text': 'Seleccione al menos una subcategoria'})
+            if authors is None or len(authors) == 0:
+                if len(messages) == 0:
+                    messages.append({'tags': 'alert-danger', 'text': 'Ingrese el/los autor/es'})
+            if (tutor1 is None or len(tutor1) == 0) and (tutor2 is None or len(tutor2) == 0):
+                if len(messages) == 0:
+                    messages.append({'tags': 'alert-danger', 'text': 'Ingrese el/los tutor/es'})
+
+            if len(messages) == 0:
+                new_tesis = Tesis.objects.get(pk=tesis_id)
+                new_tesis.title = title
+                new_tesis.description = resume
+                new_tesis.tesis_type = type
+                new_tesis.url = link
+                new_tesis.format = format
+                new_tesis.year = year
+                new_tesis.career = Career.objects.get(pk=career)
+                new_tesis.save()
+
+                authors_checked = authors.split(",")
+                for a in authors_checked:
+                    obj, created = Person.objects.update_or_create(name=a)
+                    new_tesis.author.add(obj)
+                if not (tutor1 is None or len(tutor1) == 0):
+                    obj, created = Person.objects.update_or_create(name=tutor1)
+                    new_tesis.tutor.add(obj)
+                if not (tutor2 is None or len(tutor2) == 0):
+                    obj, created = Person.objects.update_or_create(name=tutor2)
+                    new_tesis.tutor.add(obj)
+                for s in subcategories:
+                    new_tesis.sub_category.add(SubCategory.objects.get(pk=s))
+
+                messages.append({'tags': 'alert-success', 'text': 'Tesis actualizada'})
+                return render(request, 'add_tesis.html',
+                              {'faculty_list': json.dumps(faculty_list_parsed),
+                               'career_list': json.dumps(career_list_parsed), 'messages': messages,
+                               'subcategory_list': json.dumps(subcategory_list_parsed),
+                               'types': constants.TYPE_CHOICES})
+    else:
+        return redirect('/dashboard')

@@ -160,8 +160,8 @@ class TesisRanking(models.Model):
 
 class Category(models.Model):
     category_name = models.CharField(verbose_name='Nombre', max_length=100, db_column='category_name', unique=True)
-    category_fa_icon = models.CharField(verbose_name='Icono Material o FA', max_length=100,
-                                        default='<i class="fa fa-book-open"></i>',
+    category_fa_icon = models.CharField(verbose_name='Icono Material', max_length=100,
+                                        default='<i class="material-icons">bubble_chart</i>',
                                         db_column='category_fa_icon', null=True)
 
     class Meta:
@@ -176,7 +176,7 @@ class Category(models.Model):
 class SubCategory(models.Model):
     sub_category_name = models.CharField(verbose_name='Nombre', max_length=100, db_column='sub_category_name',
                                          unique=True)
-    sub_category_fa_icon = models.CharField(verbose_name='Icono Material o FA', max_length=100,
+    sub_category_fa_icon = models.CharField(verbose_name='Icono Material', max_length=100,
                                             default='<i class="material-icons">bubble_chart</i>',
                                             db_column='sub_category_fa_icon', null=True, blank=True)
     categories = models.ManyToManyField('Category', db_column='categories')

@@ -20,8 +20,12 @@ class ResumeServices:
         # Total de tesis en el sitio
         self.total_tesis_number = len(total_tesis)
         # Se obtiene la primera tesis, la ultima de la lista, para sacar el dato desde que año tenemos tesis
-        last = total_tesis.reverse()[0]
-        self.init_year = last.year
+        actual_year = datetime.datetime.now().year
+        try:
+            last = total_tesis.reverse()[0]
+            self.init_year = last.year
+        except:
+            self.init_year = actual_year
         # Cuadradito 2
         university_list = Institution.objects.all()
         self.total_institution = len(university_list)
@@ -29,7 +33,6 @@ class ResumeServices:
         self.total_faculty = len(faculty_list)
         # Cuadradito 3
         outside_central_count = 0
-        actual_year = datetime.datetime.now().year
         years_dict = dict()
         for t in total_tesis:
             if t.career.faculty.department_id.department_id not in [18, 11]:
@@ -41,7 +44,10 @@ class ResumeServices:
                         years_dict[year_compare] += 1
                     else:
                         years_dict[year_compare] = 1
-        self.outside_capital_percentage = (outside_central_count / self.total_tesis_number) * 100
+        if self.total_tesis_number > 0:
+            self.outside_capital_percentage = (outside_central_count / self.total_tesis_number) * 100
+        else:
+            self.outside_capital_percentage = 0  # No hay tesis en el sistema, no podemos dividir nada
         self.trending = 'trending_flat'
         # En years_dict tenemos un dict de los dos ultimos años por ejemplo {'2017':20, '2016':12}
         # Entonces vemos que se aumento y debemos mostrar la flecha hacia arriba

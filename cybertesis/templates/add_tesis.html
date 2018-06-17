@@ -45,7 +45,11 @@
                 <div class="col-md-8">
                     <div class="card">
                         <div class="card-header card-header-primary">
-                            <h4 class="card-title">Agregar Nueva Tesis</h4>
+                            {% if edit %}
+                                    <h4 class="card-title">Editar Tesis</h4>
+                            {% else %}
+                                    <h4 class="card-title">Agregar Nueva Tesis</h4>
+                            {% endif %}
                         </div>
                         <div class="card-body">
                             <form action="" method="post">
@@ -149,7 +153,11 @@
                                     </div>
                                 </div>
                                 <div class="clearfix"></div>
-                                <button type="submit" class="btn btn-primary btn-block col-md-2">Guardar</button>
+                                {% if edit %}
+                                    <button type="submit" class="btn btn-primary btn-block col-md-3">Editar</button>
+                                {% else %}
+                                    <button type="submit" class="btn btn-primary btn-block col-md-3">Guardar</button>
+                                {% endif %}
                             </form>
                         </div>
                     </div>
